@@ -45,6 +45,10 @@ app.on("activate", () => {
 
 // Comunição entre o browser e o nativo
 
+ipcMain.handle("app:get-app-state", (ev, defaultState) => {
+  return fileManager.getAppState(defaultState);
+});
+
 ipcMain.handle("app:get-files", () => {
   return fileManager.getFileList();
 });
@@ -56,6 +60,12 @@ ipcMain.handle("app:load-file", (ev, fileData) => {
 });
 
 ipcMain.on("app:run-sketch", (ev, file) => {
+  fileManager.updateAppState({
+    currentSketch: {
+      name: file.name,
+      dir: "temp",
+    },
+  });
   fileManager.saveTempFile(file, viewerWin);
 });
 

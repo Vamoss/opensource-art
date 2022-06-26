@@ -1,44 +1,12 @@
-import { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { v4 as uuidv4 } from "uuid";
-
-const initialFilesState = {
-  initial: [],
-  derived: [],
-};
-
-const initialCodeState = `function setup() {
-  createCanvas(400, 400);
-}
-
-function draw() {
-  fill(255);
-  ellipse(mouseX, mouseY, 80, 80);
-}
-`;
+import { useFileSystem } from "../hooks/useFileSystemState";
 
 const CodeEditor = () => {
-  const [code, setCode] = useState(initialCodeState);
-  const [files, setFiles] = useState(initialFilesState);
-
-  useEffect(() => {
-    window.ipcRenderer
-      .invoke("app:get-files")
-      .then((files = initialFilesState) => {
-        setFiles(files);
-      });
-  }, []);
+  const { files, code, updateCode, runSketch, loadFile } = useFileSystem();
 
   const onChange = (value) => {
-    setCode(value);
-  };
-
-  const runSketch = () => {
-    window.ipcRenderer.send("app:run-sketch", {
-      name: `${uuidv4()}.js`,
-      content: code,
-    });
+    updateCode(value);
   };
 
   const saveFile = () => {
@@ -52,15 +20,6 @@ const CodeEditor = () => {
     window.ipcRenderer.send("app:update-file", {
       name: "testfile.js",
       content: code,
-    });
-  };
-
-  const loadFile = (fileData = { dir: null, name: null }) => {
-    window.ipcRenderer.invoke("app:load-file", fileData).then((file = null) => {
-      if (file === null) {
-        return;
-      }
-      setCode(file.content);
     });
   };
 

@@ -18,7 +18,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     }
   },
   invoke: (channel, data) => {
-    let validChannels = ["app:get-files", "app:load-file"];
+    let validChannels = ["app:get-app-state", "app:get-files", "app:load-file"];
     if (validChannels.includes(channel)) {
       return ipcRenderer.invoke(channel, data);
     }

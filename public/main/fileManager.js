@@ -45,7 +45,7 @@ exports.saveTempFile = (file, viewerWin) => {
   const tempFilesList = fs.readdirSync(tempDirLocation);
 
   tempFilesList.forEach((file) => {
-    fs.rmSync(`${tempDirLocation}/${file}`);
+    fs.rmSync(`${tempDirLocation}${file}`);
   });
 
   return fs.writeFile(
@@ -120,6 +120,34 @@ exports.getFileList = () => {
     initial,
     derived,
   };
+};
+
+exports.getAppState = (defaultState) => {
+  const stateFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}appstate.json`
+  );
+
+  if (!fs.existsSync(stateFileLocation)) {
+    fs.writeFileSync(stateFileLocation, JSON.stringify(defaultState), {
+      encoding: "utf-8",
+    });
+  }
+
+  const fileContent = fs.readFileSync(stateFileLocation, { encoding: "utf-8" });
+
+  return JSON.parse(fileContent);
+};
+
+exports.updateAppState = (appState) => {
+  const stateFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}appstate.json`
+  );
+
+  fs.writeFileSync(stateFileLocation, JSON.stringify(appState), {
+    encoding: "utf-8",
+  });
 };
 
 /**
