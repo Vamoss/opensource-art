@@ -23,12 +23,18 @@ const Viewer = () => {
       sketchScript.id = `sketchScript`;
       document.body.appendChild(sketchScript);
     }
-    sketchScript.src = `/main/data/${currentSketch.dir}/${currentSketch.name}`;
+
+    const filePath =
+      currentSketch.dir === "temp"
+        ? currentSketch.name
+        : `${currentSketch.name}/sketch.js`;
+
+    sketchScript.src = `/main/data/${currentSketch.dir}/${filePath}`;
   }, [currentSketch]);
 
   useEffect(() => {
     window.ipcRenderer.receive("app:load-code", (file) => {
-      location.reload();
+      window.location.reload();
     });
   }, []);
 

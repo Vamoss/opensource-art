@@ -28,7 +28,13 @@ export const FileSystemProvider = ({ children }) => {
     window.ipcRenderer
       .invoke("app:get-app-state", defaultState)
       .then((appState = initialState.currentSketch) => {
-        dispatch({ type: "update_state", payload: appState });
+        dispatch({
+          type: "update_state",
+          payload: {
+            currentSketch: appState.currentSketch,
+            code: appState.content,
+          },
+        });
       });
   }, []);
 
@@ -59,13 +65,27 @@ export const FileSystemProvider = ({ children }) => {
       if (file === null) {
         return;
       }
-      updateCode(file.content);
+      dispatch({
+        type: "update_state",
+        payload: {
+          currentSketch: fileData,
+          code: file.content,
+        },
+      });
+    });
+  };
+
+  const saveFile = () => {
+    window.ipcRenderer.send("app:save-file", {
+      parent: state?.currentSketch?.name,
+      name: `${uuidv4()}`,
+      content: state.code,
     });
   };
 
   return (
     <FileSystemContext.Provider
-      value={{ ...state, updateCode, runSketch, loadFile }}
+      value={{ ...state, updateCode, runSketch, loadFile, saveFile }}
     >
       {children}
     </FileSystemContext.Provider>

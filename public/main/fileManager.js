@@ -70,22 +70,41 @@ exports.saveTempFile = (file, viewerWin) => {
  * Cria um novo arquivo.
  */
 exports.saveFile = (file) => {
-  const fileLocation = path.join(__dirname, `${PATH_TO_FILES}${file.name}`);
+  const fileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}${file.name}`
+  );
   console.log("Saving file at: ", fileLocation);
 
-  // Checa se o diretório já existe
-  if (!fs.existsSync(path.join(__dirname, PATH_TO_FILES))) {
-    // Cria o diretório
-    fs.mkdirSync(path.join(__dirname, PATH_TO_FILES));
-  }
+  fs.mkdirSync(fileLocation);
 
-  fs.writeFile(fileLocation, file.content, { encoding: "utf-8" }, (err) => {
-    if (err) {
-      console.log("Error Saving file:", err.message);
-      throw err;
+  fs.writeFile(
+    `${fileLocation}/sketch.js`,
+    file.content,
+    { encoding: "utf-8" },
+    (err) => {
+      if (err) {
+        console.log("Error Saving file:", err.message);
+        throw err;
+      }
+      console.log("Saved!");
     }
-    console.log("Saved!");
-  });
+  );
+
+  fs.writeFile(
+    `${fileLocation}/metadata.json`,
+    JSON.stringify({
+      ...file,
+    }),
+    { encoding: "utf-8" },
+    (err) => {
+      if (err) {
+        console.log("Error Saving file:", err.message);
+        throw err;
+      }
+      console.log("Metadada saved!");
+    }
+  );
 };
 
 /**
@@ -160,8 +179,11 @@ exports.loadFile = (fileData) => {
     return null;
   }
 
+  const filePath =
+    fileData.dir === "temp" ? fileData.name : `${fileData.name}/sketch.js`;
+
   const fileContent = fs.readFileSync(
-    path.join(__dirname, `${PATH_TO_FILES}${fileData.dir}/${fileData.name}`),
+    path.join(__dirname, `${PATH_TO_FILES}${fileData.dir}/${filePath}`),
     { encoding: "utf-8" }
   );
   return {

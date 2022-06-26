@@ -18,7 +18,7 @@ export const initialState = {
 // file to be loaded if no sketch is loaded and nothing is set in the state file
 export const defaultState = {
   currentSketch: {
-    name: "circle_draw.js",
+    name: "circle_draw",
     dir: "initial",
   },
 };

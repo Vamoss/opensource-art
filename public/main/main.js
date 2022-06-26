@@ -46,7 +46,9 @@ app.on("activate", () => {
 // Comunição entre o browser e o nativo
 
 ipcMain.handle("app:get-app-state", (ev, defaultState) => {
-  return fileManager.getAppState(defaultState);
+  const appState = fileManager.getAppState(defaultState);
+  const file = fileManager.loadFile(appState.currentSketch);
+  return { ...appState, ...file };
 });
 
 ipcMain.handle("app:get-files", () => {
@@ -55,6 +57,9 @@ ipcMain.handle("app:get-files", () => {
 
 ipcMain.handle("app:load-file", (ev, fileData) => {
   const file = fileManager.loadFile(fileData);
+  fileManager.updateAppState({
+    currentSketch: fileData,
+  });
   viewerWin.webContents.send("app:load-code", file);
   return file;
 });
