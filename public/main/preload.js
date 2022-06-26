@@ -5,7 +5,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("ipcRenderer", {
   send: (channel, data) => {
     // whitelist channels
-    let validChannels = ["app:save-file", "app:update-file"];
+    let validChannels = ["app:run-sketch", "app:save-file", "app:update-file"];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }

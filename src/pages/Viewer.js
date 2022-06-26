@@ -20,7 +20,7 @@ const Viewer = () => {
         sketchScript.id = `sketchScript`;
         document.body.appendChild(sketchScript);
       }
-      sketchScript.src = `/main/files/${file.name}`;
+      sketchScript.src = `/main/data/${file.dir}/${file.name}`;
     });
   }, []);
 

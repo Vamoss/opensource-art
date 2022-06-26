@@ -49,10 +49,14 @@ ipcMain.handle("app:get-files", () => {
   return fileManager.getFileList();
 });
 
-ipcMain.handle("app:load-file", (ev, fileName) => {
-  const file = fileManager.loadFile(fileName);
+ipcMain.handle("app:load-file", (ev, fileData) => {
+  const file = fileManager.loadFile(fileData);
   viewerWin.webContents.send("app:load-code", file);
   return file;
+});
+
+ipcMain.on("app:run-sketch", (ev, file) => {
+  fileManager.saveTempFile(file, viewerWin);
 });
 
 ipcMain.on("app:save-file", (ev, file) => {
