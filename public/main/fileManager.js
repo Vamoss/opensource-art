@@ -1,7 +1,23 @@
 const fs = require("fs");
 const path = require("path");
 
-const PATH_TO_FILES = "/files/";
+const PATH_TO_FILES = "/data/";
+
+const ensuresDir = (dirPath) => {
+  // Checa se o diretório já existe
+  if (!fs.existsSync(dirPath)) {
+    // Cria o diretório
+    fs.mkdirSync(dirPath);
+  }
+};
+
+const ensuresFolderStructure = () => {
+  ensuresDir(path.join(__dirname, PATH_TO_FILES));
+  ensuresDir(path.join(__dirname, `${PATH_TO_FILES}initial`));
+  ensuresDir(path.join(__dirname, `${PATH_TO_FILES}derivadas`));
+};
+
+ensuresFolderStructure();
 
 /**
  * Testa se o diretório existe e cria caso ainda não esteja feito.
