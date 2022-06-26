@@ -13,7 +13,7 @@ const CodeEditor = () => {
   return (
     <main className="container">
       <SideBar />
-      <section>
+      <section className="code-container">
         <CodeMirror
           value={code}
           height="50%"

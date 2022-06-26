@@ -15,5 +15,9 @@ code {
 .container {
   display: grid;
   grid-template-columns: 200px auto;
-  min-height: 100vh;
+  height: 100vh;
+}
+
+.code-container {
+  overflow: scroll;
 }
