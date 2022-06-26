@@ -14,6 +14,6 @@ code {
 
 .container {
   display: grid;
-  grid-template-columns: 100px auto;
+  grid-template-columns: 200px auto;
   min-height: 100vh;
 }

@@ -1,0 +1,29 @@
+.sidebar {
+  background-color: black;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  border: none;
+  background: #ff9966;
+  color: white;
+  padding: 8px 16px;
+  margin: 0 0 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title {
+  color: white;
+}
+
+.link {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
