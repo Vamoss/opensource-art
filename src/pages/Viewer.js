@@ -33,7 +33,7 @@ const Viewer = () => {
   }, [currentSketch]);
 
   useEffect(() => {
-    window.ipcRenderer.receive("app:load-code", (file) => {
+    window.ipcRenderer.receive("app:reload-viewer", (file) => {
       window.location.reload();
     });
   }, []);

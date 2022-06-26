@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     }
   },
   receive: (channel, func) => {
-    let validChannels = ["app:load-code"];
+    let validChannels = ["app:reload-viewer"];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args));

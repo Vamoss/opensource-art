@@ -2,8 +2,7 @@ import React from "react";
 import { useFileSystem } from "../hooks/useFileSystemState";
 
 const SideBar = () => {
-  const { files, code, updateCode, runSketch, loadFile, saveFile } =
-    useFileSystem();
+  const { files, runSketch, loadFile, saveFile } = useFileSystem();
 
   return (
     <nav>

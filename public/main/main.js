@@ -60,7 +60,7 @@ ipcMain.handle("app:load-file", (ev, fileData) => {
   fileManager.updateAppState({
     currentSketch: fileData,
   });
-  viewerWin.webContents.send("app:load-code", file);
+  viewerWin.webContents.send("app:reload-viewer", file);
   return file;
 });
 
