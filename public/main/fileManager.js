@@ -44,12 +44,12 @@ exports.saveTempFile = (file, viewerWin) => {
   );
   const tempFilesList = fs.readdirSync(tempDirLocation);
 
-  tempFilesList.forEach((file) => {
-    fs.rmSync(`${tempDirLocation}${file}`);
+  tempFilesList.forEach((tempFileName) => {
+    fs.rmSync(`${tempDirLocation}${tempFileName}`);
   });
 
   return fs.writeFile(
-    `${tempDirLocation}/${file.name}`,
+    `${tempDirLocation}/${file.id}`,
     file.content,
     { encoding: "utf-8" },
     (err) => {
@@ -93,9 +93,7 @@ exports.saveFile = (file) => {
 
   fs.writeFile(
     `${fileLocation}/metadata.json`,
-    JSON.stringify({
-      ...file,
-    }),
+    JSON.stringify({ ...file, dir: "derived" }),
     { encoding: "utf-8" },
     (err) => {
       if (err) {
@@ -175,19 +173,43 @@ exports.updateAppState = (appState) => {
  * Retorna null se não encontrar o arquivo
  */
 exports.loadFile = (fileData) => {
-  if (fileData.dir === null || fileData.name === null) {
+  if (fileData.dir === null || fileData.id === null) {
     return null;
   }
 
-  const filePath =
-    fileData.dir === "temp" ? fileData.name : `${fileData.name}/sketch.js`;
+  const fileContentPath =
+    fileData.dir === "temp" ? fileData.id : `${fileData.id}/sketch.js`;
 
   const fileContent = fs.readFileSync(
-    path.join(__dirname, `${PATH_TO_FILES}${fileData.dir}/${filePath}`),
+    path.join(__dirname, `${PATH_TO_FILES}${fileData.dir}/${fileContentPath}`),
     { encoding: "utf-8" }
   );
+
+  /* Só os derived tem meta, então retorna logo com o fileData mesmo
+   * se for de outro diretório
+   */
+  if (fileData.dir !== "derived") {
+    return {
+      content: fileContent,
+      meta: fileData,
+    };
+  }
+
+  const fileMetaPath = `${fileData.id}/metadata.json`;
+
+  let fileMeta = fs.readFileSync(
+    path.join(__dirname, `${PATH_TO_FILES}${fileData.dir}/${fileMetaPath}`),
+    { encoding: "utf-8" }
+  );
+
+  try {
+    fileMeta = JSON.parse(fileMeta);
+  } catch (e) {
+    console.log(`error parsing file for id ${fileData.id}`);
+  }
+
   return {
-    ...fileData,
     content: fileContent,
+    meta: fileMeta,
   };
 };

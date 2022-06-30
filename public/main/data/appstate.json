@@ -1,1 +1,1 @@
-{"currentSketch":{"name":"a305cbc9-1433-463a-8d31-32479d3d76c9.js","dir":"temp"}}
+{"activeSketch":{"dir":"derived","name":"71503bbd-7b7b-4eb0-a787-bf75a6265a65","id":"71503bbd-7b7b-4eb0-a787-bf75a6265a65"},"code":"function setup() {\n  createCanvas(400, 400);\n}\n\nfunction draw() {\n  fill(100, 150, 230);\n  rect(mouseX, mouseY, 80, 80);\n}\n","currentInView":{"id":"8828b654-c044-4b9e-b7f2-20e6b062fbed.js","dir":"temp"}}

@@ -1,0 +1,1 @@
+{"name":"34022d6d-82cc-45db-861d-cd667cd6fbce","id":"34022d6d-82cc-45db-861d-cd667cd6fbce","content":"function setup() {\n  createCanvas(400, 400);\n}\n\nfunction draw() {\n  fill(0, 155, 250);\n  ellipse(mouseX, mouseY, 80, 80);\n}\n","parent":{"id":"circle_draw","name":"circle_draw","dir":"initial"},"dir":"derived"}

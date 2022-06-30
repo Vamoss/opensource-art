@@ -1,1 +1,0 @@
-{"parent":"circle_draw","name":"a35fd61d-5db6-48b6-99bc-c5cc978bc36d","content":"function setup() {\n  createCanvas(400, 400);\n}\n\nfunction draw() {\n  if (mouseIsPressed) {\n    fill(0);\n  } else {\n    fill(255);\n  }\n  rect(mouseX, mouseY, 80, 80);\n}\n"}
