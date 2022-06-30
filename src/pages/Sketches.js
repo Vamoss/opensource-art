@@ -9,30 +9,32 @@ const Sketches = () => {
     <main className="container">
       <SideBar />
       <div>
-        {files.initial.map((fileName) => (
+        {files.initial.map((id) => (
           <button
-            key={fileName}
+            key={id}
             onClick={() =>
               loadFile({
                 dir: "initial",
-                name: fileName,
+                name: id,
+                id,
               })
             }
           >
-            {fileName}
+            {id}
           </button>
         ))}
-        {files.derived.map((fileName) => (
+        {files.derived.map((id) => (
           <button
-            key={fileName}
+            key={id}
             onClick={() =>
               loadFile({
                 dir: "derived",
-                name: fileName,
+                name: id,
+                id,
               })
             }
           >
-            {fileName}
+            {id}
           </button>
         ))}
       </div>

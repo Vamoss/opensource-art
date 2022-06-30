@@ -3,6 +3,7 @@ const path = require("path");
 const { app, BrowserWindow, shell, ipcMain } = require("electron");
 
 const fileManager = require("./fileManager");
+const stateModel = require("./stateModel");
 
 let win;
 let viewerWin;
@@ -45,10 +46,14 @@ app.on("activate", () => {
 
 // Comunição entre o browser e o nativo
 
-ipcMain.handle("app:get-app-state", (ev, defaultState) => {
-  const appState = fileManager.getAppState(defaultState);
-  const file = fileManager.loadFile(appState.currentSketch);
-  return { ...appState, ...file };
+ipcMain.handle("app:get-app-state", () => {
+  const appState = fileManager.getAppState(stateModel.getDefaultState());
+  const file = fileManager.loadFile(appState.currentInView);
+  return {
+    ...appState,
+    // carrega a atual versão do current in view pra mostrar o código quando inicia o app
+    code: file.content,
+  };
 });
 
 ipcMain.handle("app:get-files", () => {
@@ -57,21 +62,23 @@ ipcMain.handle("app:get-files", () => {
 
 ipcMain.handle("app:load-file", (ev, fileData) => {
   const file = fileManager.loadFile(fileData);
-  fileManager.updateAppState({
-    currentSketch: fileData,
-  });
+  fileManager.updateAppState(
+    stateModel.updateStateToActivateSketchFromFile(file)
+  );
   viewerWin.webContents.send("app:reload-viewer", file);
   return file;
 });
 
 ipcMain.on("app:run-sketch", (ev, file) => {
+  const appState = fileManager.getAppState(stateModel.getDefaultState());
+  fileManager.saveTempFile(file, viewerWin);
   fileManager.updateAppState({
-    currentSketch: {
-      name: file.name,
+    ...appState,
+    currentInView: {
+      id: file.id,
       dir: "temp",
     },
   });
-  fileManager.saveTempFile(file, viewerWin);
 });
 
 ipcMain.on("app:save-file", (ev, file) => {

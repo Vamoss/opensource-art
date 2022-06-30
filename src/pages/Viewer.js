@@ -2,10 +2,10 @@ import React, { useEffect, useRef } from "react";
 import { useFileSystem } from "../hooks/useFileSystemState";
 
 const Viewer = () => {
-  const { currentSketch } = useFileSystem();
+  const { currentInView } = useFileSystem();
 
   useEffect(() => {
-    if (currentSketch === null) {
+    if (currentInView === null) {
       return;
     }
 
@@ -25,12 +25,12 @@ const Viewer = () => {
     }
 
     const filePath =
-      currentSketch.dir === "temp"
-        ? currentSketch.name
-        : `${currentSketch.name}/sketch.js`;
+      currentInView.dir === "temp"
+        ? currentInView.id
+        : `${currentInView.id}/sketch.js`;
 
-    sketchScript.src = `/main/data/${currentSketch.dir}/${filePath}`;
-  }, [currentSketch]);
+    sketchScript.src = `/main/data/${currentInView.dir}/${filePath}`;
+  }, [currentInView]);
 
   useEffect(() => {
     window.ipcRenderer.receive("app:reload-viewer", (file) => {

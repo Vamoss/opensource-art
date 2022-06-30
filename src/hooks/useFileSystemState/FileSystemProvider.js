@@ -2,7 +2,8 @@ import { useEffect, useReducer } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { FileSystemContext } from "./FileSystemContext";
-import { defaultState, initialState } from "./initialState";
+import { getFileMetaData } from "./getFileMeta";
+import { defaultPersistentState, initialState } from "./initialState";
 import { reducer } from "./reducer";
 
 export const FileSystemProvider = ({ children }) => {
@@ -18,24 +19,19 @@ export const FileSystemProvider = ({ children }) => {
 
   useEffect(() => {
     window.ipcRenderer
-      .invoke("app:get-files")
-      .then((files = initialState.files) => {
-        dispatch({ type: "update_files", payload: files });
+      .invoke("app:get-app-state", defaultPersistentState)
+      .then((appState) => {
+        dispatch({
+          type: "update_state",
+          payload: appState,
+        });
       });
   }, []);
 
   useEffect(() => {
-    window.ipcRenderer
-      .invoke("app:get-app-state", defaultState)
-      .then((appState = initialState.currentSketch) => {
-        dispatch({
-          type: "update_state",
-          payload: {
-            currentSketch: appState.currentSketch,
-            code: appState.content,
-          },
-        });
-      });
+    window.ipcRenderer.invoke("app:get-files").then((files) => {
+      dispatch({ type: "update_files", payload: files });
+    });
   }, []);
 
   /**
@@ -45,42 +41,54 @@ export const FileSystemProvider = ({ children }) => {
   const runSketch = () => {
     const sketchName = `${uuidv4()}.js`;
     window.ipcRenderer.send("app:run-sketch", {
-      name: `${uuidv4()}.js`,
+      id: sketchName,
       content: state.code,
     });
 
     dispatch({
       type: "update_state",
       payload: {
-        currentSketch: {
-          name: sketchName,
+        currentInView: {
+          id: sketchName,
           dir: "temp",
         },
       },
     });
   };
 
-  const loadFile = (fileData = { dir: null, name: null }) => {
-    window.ipcRenderer.invoke("app:load-file", fileData).then((file = null) => {
-      if (file === null) {
+  const loadFile = (fileData = { dir: null, id: null, name: null }) => {
+    if (fileData.dir === null) {
+      // informar que está faltando coisa
+      return;
+    }
+
+    if (fileData.id === null) {
+      // informar que está faltando coisa
+      return;
+    }
+
+    window.ipcRenderer.invoke("app:load-file", fileData).then((newState) => {
+      if (newState === null) {
         return;
       }
       dispatch({
         type: "update_state",
-        payload: {
-          currentSketch: fileData,
-          code: file.content,
-        },
+        payload: newState,
       });
     });
   };
 
   const saveFile = () => {
-    window.ipcRenderer.send("app:save-file", {
-      parent: state?.currentSketch?.name,
-      name: `${uuidv4()}`,
-      content: state.code,
-    });
+    const fileId = uuidv4();
+    const fileMetaData = getFileMetaData(
+      {
+        id: fileId,
+        name: fileId,
+        code: state.code,
+      },
+      state.activeSketch
+    );
+    window.ipcRenderer.send("app:save-file", fileMetaData);
   };
 
   return (

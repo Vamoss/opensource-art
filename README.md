@@ -9,7 +9,7 @@ yarn
 ### rodar local
 
 ```
-yarn electron:serve
+yarn serve
 ```
 
 ## Estrutura do aplicativo
