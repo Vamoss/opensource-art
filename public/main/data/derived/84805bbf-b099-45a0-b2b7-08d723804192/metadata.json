@@ -1,0 +1,1 @@
+{"name":"84805bbf-b099-45a0-b2b7-08d723804192","id":"84805bbf-b099-45a0-b2b7-08d723804192","content":"function setup() {\n  createCanvas(400, 400);\n}\n\nfunction draw() {\n  if (mouseIsPressed) {\n    fill(120, 120, 120);\n  } else {\n    fill(255);\n  }\n  ellipse(mouseX, mouseY, 80, 80);\n}\n","parent":{"id":"circle_draw","name":"circle_draw","dir":"initial"},"dir":"derived"}

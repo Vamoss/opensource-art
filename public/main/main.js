@@ -69,9 +69,13 @@ ipcMain.handle("app:load-file", (ev, fileData) => {
   return file;
 });
 
+ipcMain.handle("app:get-graph-data", () => {
+  const graphData = fileManager.getGraphDataFile();
+  return graphData;
+});
+
 ipcMain.on("app:run-sketch", (ev, file) => {
   const appState = fileManager.getAppState(stateModel.getDefaultState());
-  fileManager.saveTempFile(file, viewerWin);
   fileManager.updateAppState({
     ...appState,
     currentInView: {
@@ -79,6 +83,7 @@ ipcMain.on("app:run-sketch", (ev, file) => {
       dir: "temp",
     },
   });
+  fileManager.saveTempFile(file, viewerWin);
 });
 
 ipcMain.on("app:save-file", (ev, file) => {
