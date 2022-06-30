@@ -78,6 +78,47 @@ exports.saveFile = (file) => {
 
   fs.mkdirSync(fileLocation);
 
+  /**
+   * TODO: mudar a atualização do gráfico pra o
+   * próprio metodo.
+   */
+  const graphDataFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}sketchesGraphData.json`
+  );
+
+  const graphDataContent = fs.readFileSync(graphDataFileLocation, {
+    encoding: "utf-8",
+  });
+
+  const graphData = JSON.parse(graphDataContent);
+
+  graphData.links.push({
+    source: file.name,
+    target: file?.parent?.id,
+    value: 1,
+  });
+
+  graphData.nodes.push({
+    id: file.name,
+    group: 2,
+  });
+
+  fs.writeFile(
+    graphDataFileLocation,
+    JSON.stringify(graphData),
+    { encoding: "utf-8" },
+    (err) => {
+      if (err) {
+        console.log("Error Saving file:", err.message);
+        throw err;
+      }
+      console.log("GRAPH updated!");
+    }
+  );
+
+  // FIM DA ATUALIZAÇÃO DO GRÁFICO
+
   fs.writeFile(
     `${fileLocation}/sketch.js`,
     file.content,
@@ -139,6 +180,10 @@ exports.getFileList = () => {
   };
 };
 
+/**
+ * App state
+ */
+
 exports.getAppState = (defaultState) => {
   const stateFileLocation = path.join(
     __dirname,
@@ -165,6 +210,85 @@ exports.updateAppState = (appState) => {
   fs.writeFileSync(stateFileLocation, JSON.stringify(appState), {
     encoding: "utf-8",
   });
+};
+
+/**
+ *
+ * Graph data file
+ */
+
+exports.getGraphDataFile = () => {
+  const graphDataFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}sketchesGraphData.json`
+  );
+
+  if (!fs.existsSync(graphDataFileLocation)) {
+    // set initial object for graphdata
+    const defaultGraphData = {
+      nodes: [],
+      links: [],
+    };
+
+    // check all initial sketches
+    const initialSketches = fs.readdirSync(
+      path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_INITIAL_FILES}`)
+    );
+
+    // pras initial só o nome basta pra criar o node no grafico.
+    // elas são os pontos iniciais das redes
+    initialSketches.forEach((initial) => {
+      defaultGraphData.nodes.push({
+        id: initial,
+        group: 1,
+      });
+    });
+
+    // check all initial sketches
+    const derivedSketches = fs.readdirSync(
+      path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`)
+    );
+
+    // pras derived tem que olhar na metadata dela e ver quem é a parent
+    // ai cria o node e já o link pro parent
+    derivedSketches.forEach((derived) => {
+      const fileMetaPath = `${derived}/metadata.json`;
+
+      defaultGraphData.nodes.push({
+        id: derived,
+        group: 2,
+      });
+
+      const fileMetaContent = fs.readFileSync(
+        path.join(
+          __dirname,
+          `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}${fileMetaPath}`
+        ),
+        { encoding: "utf-8" }
+      );
+
+      try {
+        const fileMeta = JSON.parse(fileMetaContent);
+        defaultGraphData.links.push({
+          source: derived,
+          target: fileMeta.parent?.id,
+          value: 1,
+        });
+      } catch (e) {
+        console.log(`error parsing metadata for id ${derived}`);
+      }
+    });
+
+    fs.writeFileSync(graphDataFileLocation, JSON.stringify(defaultGraphData), {
+      encoding: "utf-8",
+    });
+  }
+
+  const fileContent = fs.readFileSync(graphDataFileLocation, {
+    encoding: "utf-8",
+  });
+
+  return JSON.parse(fileContent);
 };
 
 /**

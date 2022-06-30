@@ -8,13 +8,17 @@ const SideBar = () => {
 
   return (
     <nav className={styles.sidebar}>
+      <h2 className={styles.title}>Navegação</h2>=
       <Link to="/" className={styles.link}>
-        Code
+        Código
       </Link>
       <Link to="/sketches" className={styles.link}>
         Sketches
       </Link>
-      <h2 className={styles.title}>Actions</h2>
+      <Link to="/force-graph" className={styles.link}>
+        Gráfico
+      </Link>
+      <h2 className={styles.title}>Ações</h2>
       <button className={styles.button} onClick={runSketch}>
         Rodar Sketch
       </button>

@@ -1,0 +1,1 @@
+{"name":"49958ae0-7bb4-4796-89d1-3b70463ea286","id":"49958ae0-7bb4-4796-89d1-3b70463ea286","content":"function setup() {\n  createCanvas(400, 400);\n}\n\nfunction draw() {\n  fill(0, 120, 12);\n  ellipse(mouseX, mouseY, 80, 80);\n}\n","parent":{"id":"9b672a94-9626-4a2c-b546-c74418ad4659","name":"9b672a94-9626-4a2c-b546-c74418ad4659","dir":"derived"},"dir":"derived"}

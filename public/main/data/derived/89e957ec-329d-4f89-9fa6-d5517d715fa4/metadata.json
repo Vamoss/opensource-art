@@ -1,0 +1,1 @@
+{"name":"89e957ec-329d-4f89-9fa6-d5517d715fa4","id":"89e957ec-329d-4f89-9fa6-d5517d715fa4","content":"function setup() {\n  createCanvas(400, 400);\n}\n\nfunction draw() {\n  fill(0, 120, 255);\n  rect(mouseX, mouseY, 80, 80);\n}\n","parent":{"id":"square_draw","name":"square_draw","dir":"initial"},"dir":"derived"}
