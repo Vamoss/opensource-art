@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { app, BrowserWindow, shell, ipcMain } = require("electron");
+const { app, BrowserWindow, screen, ipcMain } = require("electron");
 
 const fileManager = require("./fileManager");
 const stateModel = require("./stateModel");
@@ -9,9 +9,15 @@ let win;
 let viewerWin;
 
 function createWindow() {
+  let displays = screen.getAllDisplays();
+  let externalDisplay = displays.find((display) => {
+    return display.bounds.x !== 0 || display.bounds.y !== 0;
+  });
+
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    // width: 800,
+    // height: 600,
+    kiosk: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -21,8 +27,11 @@ function createWindow() {
   win.loadURL("http://localhost:3000");
 
   viewerWin = new BrowserWindow({
-    width: 800,
-    height: 600,
+    x: externalDisplay.bounds.x + 50,
+    y: externalDisplay.bounds.y + 50,
+    // width: 800,
+    // height: 600,
+    kiosk: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
