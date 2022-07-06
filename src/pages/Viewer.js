@@ -32,12 +32,6 @@ const Viewer = () => {
     sketchScript.src = `/main/data/${currentInView.dir}/${filePath}`;
   }, [currentInView]);
 
-  useEffect(() => {
-    window.ipcRenderer.receive("app:reload-viewer", (file) => {
-      window.location.reload();
-    });
-  }, []);
-
   return <></>;
 };
 

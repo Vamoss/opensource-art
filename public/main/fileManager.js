@@ -57,10 +57,11 @@ exports.saveTempFile = (file, viewerWin) => {
         console.log("Error Saving file:", err.message);
         throw err;
       }
-      viewerWin.webContents.send("app:reload-viewer", {
-        ...file,
-        dir: "temp",
-      });
+      // viewerWin.webContents.send("app:reload-viewer", {
+      //   ...file,
+      //   dir: "temp",
+      // });
+      viewerWin.reload();
     }
   );
 };
