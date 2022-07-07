@@ -3,10 +3,12 @@ import SideBar from "../components/SideBar";
 import { ForceGraph } from "../datavis/ForceGraph";
 
 import * as d3 from "d3";
+import { useFileSystem } from "../hooks/useFileSystemState";
 
 const ForceGraphPage = () => {
   const svgRef = useRef(null);
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
+  const { loadFile } = useFileSystem();
 
   useEffect(() => {
     window.ipcRenderer.invoke("app:get-graph-data").then((newGraphData) => {
@@ -15,6 +17,17 @@ const ForceGraphPage = () => {
   }, []);
 
   useEffect(() => {
+    const handleGraphNodeClicked = (item) => {
+      const clickedItemData = graphData.nodes.find(
+        (selectedItem) => selectedItem.id === item.id
+      );
+      const itemDir = clickedItemData.group === 1 ? "initial" : "derived";
+      loadFile({
+        id: item.id,
+        dir: itemDir,
+      });
+    };
+
     if (svgRef.current) {
       // Create root container where we will append all other chart elements
       const svgEl = d3.select(svgRef.current);
@@ -25,19 +38,19 @@ const ForceGraphPage = () => {
         nodeGroup: (d) => d.group,
         nodeTitle: (d) => `${d.id}\n${d.group}`,
         linkStrokeWidth: (l) => Math.sqrt(l.value),
+        nodeRadius: 10,
+        handleGraphNodeClicked,
       });
 
       return () => {
         svgEl.selectAll("*").remove(); // Clear svg content before adding new elements
       };
-
-      //svg.append(chart);
     }
 
     return () => {
       //destroy graph
     };
-  }, [svgRef.current, graphData]);
+  }, [graphData]);
 
   return (
     <main className="container">

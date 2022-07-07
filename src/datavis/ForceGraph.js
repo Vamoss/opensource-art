@@ -31,6 +31,7 @@ export const ForceGraph = (
     width = 640, // outer width, in pixels
     height = 400, // outer height, in pixels
     invalidation, // when this promise resolves, stop the simulation
+    handleGraphNodeClicked,
   } = {}
 ) => {
   // Compute values.
@@ -97,8 +98,17 @@ export const ForceGraph = (
     .selectAll("circle")
     .data(nodes)
     .join("circle")
-    .attr("r", nodeRadius)
-    .call(drag(simulation));
+    // .attr("r", nodeRadius)
+    .attr("r", (d, i) => {
+      console.log(d);
+      const modifier = d.index === 0 ? 1.4 : 1;
+      return modifier * nodeRadius;
+    })
+    .call(drag(simulation))
+    .on("click", (_d, i) => {
+      if (typeof handleGraphNodeClicked === "function")
+        handleGraphNodeClicked(i);
+    });
 
   if (W) link.attr("stroke-width", ({ index: i }) => W[i]);
   if (L) link.attr("stroke", ({ index: i }) => L[i]);
