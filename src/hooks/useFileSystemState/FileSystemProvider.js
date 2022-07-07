@@ -88,7 +88,17 @@ export const FileSystemProvider = ({ children }) => {
       },
       state.activeSketch
     );
-    window.ipcRenderer.send("app:save-file", fileMetaData);
+    window.ipcRenderer
+      .invoke("app:save-file", fileMetaData)
+      .then((newState) => {
+        if (newState === null) {
+          return;
+        }
+        dispatch({
+          type: "update_state",
+          payload: newState,
+        });
+      });
   };
 
   return (

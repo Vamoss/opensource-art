@@ -15,9 +15,9 @@ function createWindow() {
   });
 
   win = new BrowserWindow({
-    // width: 800,
-    // height: 600,
-    kiosk: true,
+    width: 800,
+    height: 600,
+    // kiosk: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -27,11 +27,11 @@ function createWindow() {
   win.loadURL("http://localhost:3000");
 
   viewerWin = new BrowserWindow({
-    // width: 800,
-    // height: 600,
-    x: externalDisplay.bounds.x + 50,
-    y: externalDisplay.bounds.y + 50,
-    kiosk: true,
+    width: 800,
+    height: 600,
+    // x: externalDisplay.bounds.x + 50,
+    // y: externalDisplay.bounds.y + 50,
+    // kiosk: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -53,6 +53,24 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
+// funções de file management
+
+/**
+ * filedata = {
+ *  id: string;
+ *  name: string;
+ *  dir: string;
+ * }
+ */
+const loadFile = (ev, fileData) => {
+  const file = fileManager.loadFile(fileData);
+  fileManager.updateAppState(
+    stateModel.updateStateToActivateSketchFromFile(file)
+  );
+  viewerWin.webContents.send("app:reload-viewer", file);
+  return file;
+};
+
 // Comunição entre o browser e o nativo
 
 ipcMain.handle("app:get-app-state", () => {
@@ -69,13 +87,20 @@ ipcMain.handle("app:get-files", () => {
   return fileManager.getFileList();
 });
 
-ipcMain.handle("app:load-file", (ev, fileData) => {
-  const file = fileManager.loadFile(fileData);
-  fileManager.updateAppState(
-    stateModel.updateStateToActivateSketchFromFile(file)
-  );
-  viewerWin.webContents.send("app:reload-viewer", file);
-  return file;
+ipcMain.handle("app:load-file", loadFile);
+
+ipcMain.handle("app:save-file", (ev, file) => {
+  fileManager.saveFile(file);
+
+  loadFile(null, {
+    name: file.name,
+    id: file.id,
+    dir: "derived",
+  });
+
+  const appState = fileManager.getAppState(stateModel.getDefaultState());
+
+  return appState;
 });
 
 ipcMain.handle("app:get-graph-data", () => {
@@ -93,10 +118,6 @@ ipcMain.on("app:run-sketch", (ev, file) => {
     },
   });
   fileManager.saveTempFile(file, viewerWin);
-});
-
-ipcMain.on("app:save-file", (ev, file) => {
-  fileManager.saveFile(file);
 });
 
 ipcMain.on("app:update-file", (ev, file) => {

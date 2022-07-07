@@ -116,7 +116,7 @@ exports.saveFile = (file) => {
 
   // FIM DA ATUALIZAÇÃO DO GRÁFICO
 
-  fs.writeFile(
+  fs.writeFileSync(
     `${fileLocation}/sketch.js`,
     file.content,
     { encoding: "utf-8" },
@@ -129,7 +129,7 @@ exports.saveFile = (file) => {
     }
   );
 
-  fs.writeFile(
+  fs.writeFileSync(
     `${fileLocation}/metadata.json`,
     JSON.stringify({ ...file, dir: "derived" }),
     { encoding: "utf-8" },
