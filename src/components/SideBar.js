@@ -2,6 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import styles from "./SideBar.module.css";
+import ToolTip from "./ToolTip";
+import SVGArrow from "./SVGArrow";
+import SVGCode from "./SVGCode";
+import SVGNetwork from "./SVGNetwork";
+import SVGSave from "./SVGSave";
+import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
 
 const SideBar = () => {
   const { activeSketch, runSketch, saveFile } = useFileSystem();
@@ -10,20 +16,28 @@ const SideBar = () => {
     <nav className={styles.sidebar}>
       <h2 className={styles.title}>Nav</h2>
       <Link to="/" className={styles.button}>
-        <img src="/assets/code-svgrepo-com.svg" alt="code" />
+        <ToolTip title="código">
+          <SVGParticlesGenWrapper SVGComponent={SVGCode} />
+        </ToolTip>
       </Link>
       {/* <Link to="/sketches" className={styles.link}>
         Sketches
       </Link> */}
       <Link to="/force-graph" className={styles.button}>
-        <img src="/assets/network-svgrepo-com.svg" alt="network graph" />
+        <ToolTip title="Arquivo">
+          <SVGParticlesGenWrapper SVGComponent={SVGNetwork} />
+        </ToolTip>
       </Link>
       <h2 className={styles.title}>Ações</h2>
       <button className={styles.button} onClick={runSketch}>
-        <img src="/assets/play-svgrepo-com.svg" alt="rodar sketch" />
+        <ToolTip title="Rodar Sketch">
+          <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
+        </ToolTip>
       </button>
       <button className={styles.button} onClick={saveFile}>
-        <img src="/assets/save-svgrepo-com.svg" alt="salvar sketch" />
+        <ToolTip title="Salvar Sketch">
+          <SVGParticlesGenWrapper SVGComponent={SVGSave} />
+        </ToolTip>
       </button>
     </nav>
   );

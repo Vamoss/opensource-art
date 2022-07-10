@@ -2,11 +2,13 @@ import React from "react";
 import SideBar from "../components/SideBar";
 import { useFileSystem } from "../hooks/useFileSystemState";
 
+import styles from "./Layout.module.css";
+
 const Sketches = () => {
   const { files, loadFile } = useFileSystem();
 
   return (
-    <main className="container">
+    <main className={styles.container}>
       <SideBar />
       <div>
         {files.initial.map((id) => (

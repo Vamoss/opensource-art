@@ -2316,6 +2316,22 @@
     "@typescript-eslint/types" "5.29.0"
     eslint-visitor-keys "^3.3.0"
 
+"@uiw/codemirror-theme-dracula@^4.11.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@uiw/codemirror-theme-dracula/-/codemirror-theme-dracula-4.11.0.tgz#ea0c8136d6ffb5181eee2ea06d34db1e3b6d3f8f"
+  integrity sha512-/7g3Y04o5WiH/1ZK8cfwPVWJ60E8iolmyD45YcgLRm+clHm4KbdJc+kcJFf+5KH94q4wp3xjBk/v0yH5xHAD2w==
+  dependencies:
+    "@uiw/codemirror-themes" "4.11.0"
+
+"@uiw/codemirror-themes@4.11.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@uiw/codemirror-themes/-/codemirror-themes-4.11.0.tgz#e9693207211e238a0bca61efc24115dde432963d"
+  integrity sha512-zXh+rxvNuBA3EYKs9VTjWmcSLUzcwXiZtr7RMq138ZcsfPps5GPoswhJOX6OgFCeSZWG5Ts6c+g+vsx6t1TlJQ==
+  dependencies:
+    "@codemirror/language" "^6.0.0"
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.0.0"
+
 "@uiw/react-codemirror@^4.9.4":
   version "4.9.4"
   resolved "https://registry.yarnpkg.com/@uiw/react-codemirror/-/react-codemirror-4.9.4.tgz#4643201f279fed103f2cf15df9431931fe4e9f15"

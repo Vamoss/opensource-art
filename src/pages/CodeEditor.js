@@ -1,7 +1,10 @@
 import CodeMirror from "@uiw/react-codemirror";
+import { dracula } from "@uiw/codemirror-theme-dracula";
 import { javascript } from "@codemirror/lang-javascript";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import SideBar from "../components/SideBar";
+
+import styles from "./Layout.module.css";
 
 const CodeEditor = () => {
   const { code, updateCode } = useFileSystem();
@@ -11,14 +14,15 @@ const CodeEditor = () => {
   };
 
   return (
-    <main className="container">
+    <main className={styles.container}>
       <SideBar />
-      <section className="code-container">
+      <section className={styles.codeContainer}>
         <CodeMirror
           value={code}
           height="50%"
           extensions={[javascript()]}
           onChange={onChange}
+          theme={dracula}
         />
       </section>
     </main>

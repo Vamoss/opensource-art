@@ -93,14 +93,13 @@ export const ForceGraph = (
     .append("g")
     .attr("fill", nodeFill)
     .attr("stroke", nodeStroke)
-    .attr("stroke-opacity", nodeStrokeOpacity)
+    .attr("stroke-opacity", 0)
     .attr("stroke-width", nodeStrokeWidth)
     .selectAll("circle")
     .data(nodes)
     .join("circle")
     // .attr("r", nodeRadius)
     .attr("r", (d, i) => {
-      console.log(d);
       const modifier = d.index === 0 ? 1.4 : 1;
       return modifier * nodeRadius;
     })
@@ -110,9 +109,21 @@ export const ForceGraph = (
         handleGraphNodeClicked(i);
     });
 
+  // pink #ff79c6
+  // green #50fa7b
+  // blue #66d9ef
+  // dark blue #6272a4
+
+  const getNodeFillColor = ({ index }) => {
+    if (index === 0) return "#66d9ef";
+
+    return "#6272a4";
+  };
+
   if (W) link.attr("stroke-width", ({ index: i }) => W[i]);
   if (L) link.attr("stroke", ({ index: i }) => L[i]);
-  if (G) node.attr("fill", ({ index: i }) => color(G[i]));
+  // if (G) node.attr("fill", ({ index: i }) => color(G[i]));
+  if (G) node.attr("fill", getNodeFillColor);
   if (T) node.append("title").text(({ index: i }) => T[i]);
   if (invalidation != null) invalidation.then(() => simulation.stop());
 

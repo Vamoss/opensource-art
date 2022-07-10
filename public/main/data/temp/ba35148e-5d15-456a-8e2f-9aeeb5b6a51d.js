@@ -41,7 +41,7 @@ function setup() {
     radius * 3
   );
   hexagonLines.strokeWeight(16);
-  hexagonLines.stroke(100, 240, 22);
+  hexagonLines.stroke(100, 230, 200);
   hexagonLines.ellipse(radius - altitude, radius - radius / 2, radius, radius);
   hexagonLines.ellipse(radius + altitude * 2, radius, radius * 3, radius * 3);
   hexagonLines.ellipse(

@@ -1,0 +1,30 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  position: absolute;
+  right: 0;
+  transform: translateX(100%);
+  z-index: 2;
+  background-color: #f8a438;
+  color: #30264b;
+  padding: 0;
+  pointer-events: none;
+  width: 0;
+  overflow: hidden;
+  border-radius: 0 4px 4px 0;
+  transition: width 0.3s;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.wrapper:hover .title {
+  padding: 4px 8px;
+  width: 100px;
+}

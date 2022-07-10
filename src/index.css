@@ -11,13 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-.container {
-  display: grid;
-  grid-template-columns: 100px auto;
-  height: 100vh;
-}
-
-.code-container {
-  overflow: scroll;
-}

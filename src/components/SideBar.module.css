@@ -1,5 +1,5 @@
 .sidebar {
-  background-color: black;
+  background-color: #30264b;
   padding: 2px;
   display: flex;
   flex-direction: column;
@@ -8,25 +8,25 @@
 
 .button {
   border: none;
-  background: rgb(221, 217, 217);
-  margin: 0 0 20px;
-  border-radius: 2px;
+  background: #30264b;
+  border-bottom: 2px solid #604f8f;
   cursor: pointer;
-  height: 60px;
-  width: 60px;
+  height: 80px;
+  width: 100%;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .button:hover {
-  background: #fff;
+  background: #1f153a;
 }
 
 .button img {
-  width: 50px;
+  width: 40px;
 }
 
 .title {
-  color: white;
+  color: #f8a438;
 }

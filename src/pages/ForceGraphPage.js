@@ -5,6 +5,8 @@ import { ForceGraph } from "../datavis/ForceGraph";
 import * as d3 from "d3";
 import { useFileSystem } from "../hooks/useFileSystemState";
 
+import styles from "./Layout.module.css";
+
 const ForceGraphPage = () => {
   const svgRef = useRef(null);
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -36,7 +38,7 @@ const ForceGraphPage = () => {
       ForceGraph(svgEl, graphData, {
         nodeId: (d) => d.id,
         nodeGroup: (d) => d.group,
-        nodeTitle: (d) => `${d.id}\n${d.group}`,
+        nodeTitle: (d) => `${d.id}`,
         linkStrokeWidth: (l) => Math.sqrt(l.value),
         nodeRadius: 10,
         handleGraphNodeClicked,
@@ -53,7 +55,7 @@ const ForceGraphPage = () => {
   }, [graphData]);
 
   return (
-    <main className="container">
+    <main className={styles.container}>
       <SideBar />
       <svg ref={svgRef} />
     </main>

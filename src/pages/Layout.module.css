@@ -1,0 +1,14 @@
+.container {
+  display: grid;
+  grid-template-columns: 100px auto;
+  height: 100vh;
+  background-color: #282a36;
+}
+
+.codeContainer {
+  overflow: scroll;
+}
+
+.codeContainer * {
+  font-size: 1.2rem;
+}
