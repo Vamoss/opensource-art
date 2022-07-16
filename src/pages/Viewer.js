@@ -9,14 +9,6 @@ const Viewer = () => {
       return;
     }
 
-    let pscript = document.getElementById("p5script");
-    if (pscript === null) {
-      pscript = document.createElement("script");
-      pscript.src = `https://cdn.jsdelivr.net/npm/p5@1.4.1/lib/p5.js`;
-      pscript.id = `p5script`;
-      document.body.appendChild(pscript);
-    }
-
     let sketchScript = document.getElementById("sketchScript");
     if (sketchScript === null) {
       sketchScript = document.createElement("script");
@@ -28,6 +20,17 @@ const Viewer = () => {
       currentInView.dir === "temp"
         ? currentInView.id
         : `${currentInView.id}/sketch.js`;
+
+    sketchScript.onload = () => {
+      let pscript = document.getElementById("p5script");
+      if (pscript === null) {
+        pscript = document.createElement("script");
+        pscript.setAttribute("defer", true);
+        pscript.src = `/vendor/p5.js`;
+        pscript.id = `p5script`;
+        document.body.appendChild(pscript);
+      }
+    };
 
     sketchScript.src = `/main/data/${currentInView.dir}/${filePath}`;
   }, [currentInView]);
