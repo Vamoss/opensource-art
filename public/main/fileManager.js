@@ -90,15 +90,9 @@ exports.saveFile = (file) => {
 
   const graphData = JSON.parse(graphDataContent);
 
-  graphData.links.push({
-    source: file.name,
-    target: file?.parent?.id,
-    value: 1,
-  });
-
-  graphData.nodes.push({
+  graphData.push({
     id: file.name,
-    group: 2,
+    parentId: file?.parent?.id,
   });
 
   fs.writeFile(
@@ -222,10 +216,7 @@ exports.getGraphDataFile = () => {
 
   if (!fs.existsSync(graphDataFileLocation)) {
     // set initial object for graphdata
-    const defaultGraphData = {
-      nodes: [],
-      links: [],
-    };
+    const defaultGraphData = [];
 
     // check all initial sketches
     const initialSketches = fs.readdirSync(
@@ -235,9 +226,9 @@ exports.getGraphDataFile = () => {
     // pras initial só o nome basta pra criar o node no grafico.
     // elas são os pontos iniciais das redes
     initialSketches.forEach((initial) => {
-      defaultGraphData.nodes.push({
+      defaultGraphData.push({
         id: initial,
-        group: 1,
+        parentId: null,
       });
     });
 
@@ -251,11 +242,6 @@ exports.getGraphDataFile = () => {
     derivedSketches.forEach((derived) => {
       const fileMetaPath = `${derived}/metadata.json`;
 
-      defaultGraphData.nodes.push({
-        id: derived,
-        group: 2,
-      });
-
       const fileMetaContent = fs.readFileSync(
         path.join(
           __dirname,
@@ -266,10 +252,9 @@ exports.getGraphDataFile = () => {
 
       try {
         const fileMeta = JSON.parse(fileMetaContent);
-        defaultGraphData.links.push({
-          source: derived,
-          target: fileMeta.parent?.id,
-          value: 1,
+        defaultGraphData.push({
+          id: derived,
+          parentId: fileMeta.parent?.id,
         });
       } catch (e) {
         console.log(`error parsing metadata for id ${derived}`);

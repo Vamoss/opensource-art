@@ -9,56 +9,13 @@ http://twitter.com/vamoss
 http://github.com/vamoss
 ******************/
 
-import p5 from "p5";
-
 //Original code from paperjs, by Jürg Lehni & Jonathan Puckey
 //http://paperjs.org/examples/meta-balls/
 
-const data = [
-  {
-    id: 0,
-    parentId: null,
-  },
-  {
-    id: 1,
-    parentId: 0,
-  },
-  {
-    id: 2,
-    parentId: 0,
-  },
-  {
-    id: 3,
-    parentId: 1,
-  },
-  {
-    id: 4,
-    parentId: 2,
-  },
-  {
-    id: 5,
-    parentId: 0,
-  },
-  {
-    id: 6,
-    parentId: 0,
-  },
-  {
-    id: 7,
-    parentId: 0,
-  },
-  {
-    id: 8,
-    parentId: 0,
-  },
-  {
-    id: 9,
-    parentId: 0,
-  },
-];
+import p5 from "p5";
 
 export const meatballs =
-  ({ width, height }) =>
+  ({ width, height, data, selectHandler }) =>
   (sketch) => {
     let scale = 1; //scale
     const minRadius = 20;
@@ -117,7 +74,7 @@ export const meatballs =
     sketch.mouseReleased = () => {
       data.forEach((d) => {
         if (d.state === STATES.PRESSED && !d.dragged) {
-          console.log("selected", d.id);
+          if (typeof selectHandler === "function") selectHandler(d);
         }
       });
     };
@@ -183,6 +140,9 @@ export const meatballs =
     }
 
     function add(item, list, lines, level) {
+      if (!item?.children) {
+        return;
+      }
       item.children.forEach((child) => {
         findSpot(item, child, list, lines);
         list.push(child);
@@ -296,7 +256,7 @@ export const meatballs =
       var canvas = sketch.createCanvas(width, height);
       ctx = canvas.drawingContext;
 
-      //*
+      /*
       //generate random points
       //descending from the original
       var total = sketch.random(5, 10);
@@ -324,23 +284,11 @@ export const meatballs =
             sketch.random(sketch.width),
             sketch.random(sketch.height)
           );
-          d.parent = data.filter((p) => p.id == d.parentId)[0];
-          d.color = sketch.color(
-            sketch.constrain(
-              d.parent.color._getRed() + sketch.random(-80, 80),
-              0,
-              255
-            ),
-            sketch.constrain(
-              d.parent.color._getGreen() + sketch.random(-80, 80),
-              0,
-              255
-            ),
-            sketch.constrain(
-              d.parent.color._getBlue() + sketch.random(-80, 80),
-              0,
-              255
-            )
+          d.parent = data.find((p) => p.id === d.parentId);
+          d.color = d.color = sketch.color(
+            sketch.random(255),
+            sketch.random(255),
+            sketch.random(255)
           );
         } else {
           d.pos = sketch.createVector(sketch.width / 2, sketch.height / 2);
