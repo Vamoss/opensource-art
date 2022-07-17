@@ -378,7 +378,7 @@ export const meatballs =
     };
 
     sketch.draw = () => {
-      sketch.background(255, 255, 220);
+      sketch.background(40, 42, 54);
 
       /*
     drawingContext.shadowOffsetX = 0;
