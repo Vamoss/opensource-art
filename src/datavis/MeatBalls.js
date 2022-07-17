@@ -15,7 +15,7 @@ http://github.com/vamoss
 import p5 from "p5";
 
 export const meatballs =
-  ({ width, height, data, selectHandler }) =>
+  ({ width, height, data, selectHandler, saveNewGraphData }) =>
   (sketch) => {
     let scale = 1; //scale
     const minRadius = 20;
@@ -278,12 +278,9 @@ export const meatballs =
 
       //add positions, state, color, total children and parent reference
       data.forEach((d) => {
-        d.children = data.filter((d2) => d.id == d2.parentId);
+        d.children = data.filter((d2) => d.id === d2.parentId);
         if (d.parentId !== null) {
-          d.pos = sketch.createVector(
-            sketch.random(sketch.width),
-            sketch.random(sketch.height)
-          );
+          d.pos = sketch.createVector(d.x * sketch.width, d.y * sketch.height);
           d.parent = data.find((p) => p.id === d.parentId);
           d.color = d.color = sketch.color(
             sketch.random(255),
@@ -323,31 +320,33 @@ export const meatballs =
       );
 
       relaxCircle();
+
+      saveNewGraphData(data, { width, height });
     };
 
     sketch.draw = () => {
       sketch.background(40, 42, 54);
 
       /*
-    drawingContext.shadowOffsetX = 0;
-    drawingContext.shadowOffsetY = 0;
-    drawingContext.shadowBlur = 2;
-    drawingContext.shadowColor = 'black';
-    */
+        drawingContext.shadowOffsetX = 0;
+        drawingContext.shadowOffsetY = 0;
+        drawingContext.shadowBlur = 2;
+        drawingContext.shadowColor = 'black';
+      */
 
       /*
-    //update circles pos
-    for(var i = 0; i < data.length; i++){
-      var d = data[i];
-      if(d.state != STATES.FREE)
-        continue;
-      
-      //noise motion
-      var angle = noise(d.id + frameCount/100) * TWO_PI;
-      d.pos.x += cos(angle)/10;
-      d.pos.y += sin(angle)/10;
-    }
-    /**/
+        //update circles pos
+        for(var i = 0; i < data.length; i++){
+          var d = data[i];
+          if(d.state != STATES.FREE)
+            continue;
+          
+          //noise motion
+          var angle = noise(d.id + frameCount/100) * TWO_PI;
+          d.pos.x += cos(angle)/10;
+          d.pos.y += sin(angle)/10;
+        }
+      /**/
 
       //generate connections
       connections.length = 0;

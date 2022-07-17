@@ -17,6 +17,23 @@ const MeatBallsPage = () => {
     });
   };
 
+  const saveNewGraphData = (data, { width, height }) => {
+    if (data.length === 0) return;
+    const dataToSave = data.map((item) => {
+      return {
+        id: data.id,
+        parentId: data.parentId,
+        x: item.pos.x / width,
+        y: item.pos.y / height,
+      };
+    });
+    // window.ipcRenderer
+    //   .invoke("app:save-graph-data", dataToSave)
+    //   .then((savedData) => {
+    //     console.log("saved", savedData);
+    //   });
+  };
+
   useEffect(() => {
     window.ipcRenderer.invoke("app:get-graph-data").then((newGraphData) => {
       setGraphData(newGraphData);
@@ -36,6 +53,7 @@ const MeatBallsPage = () => {
           height,
           data: graphData,
           selectHandler,
+          saveNewGraphData,
         }),
         sketchContainer.current
       );

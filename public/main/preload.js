@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "app:save-file",
       "app:load-file",
       "app:get-graph-data",
+      "app:save-graph-data",
     ];
     if (validChannels.includes(channel)) {
       return ipcRenderer.invoke(channel, data);

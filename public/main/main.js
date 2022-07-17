@@ -108,6 +108,11 @@ ipcMain.handle("app:get-graph-data", () => {
   return graphData;
 });
 
+ipcMain.handle("app:save-graph-data", (ev, data) => {
+  const graphData = fileManager.saveGraphDataFile(data);
+  return graphData;
+});
+
 ipcMain.on("app:run-sketch", (ev, file) => {
   const appState = fileManager.getAppState(stateModel.getDefaultState());
   fileManager.updateAppState({

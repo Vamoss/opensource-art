@@ -93,6 +93,8 @@ exports.saveFile = (file) => {
   graphData.push({
     id: file.name,
     parentId: file?.parent?.id,
+    x: Math.random(),
+    y: Math.random(),
   });
 
   fs.writeFile(
@@ -229,6 +231,8 @@ exports.getGraphDataFile = () => {
       defaultGraphData.push({
         id: initial,
         parentId: null,
+        x: Math.random(),
+        y: Math.random(),
       });
     });
 
@@ -255,6 +259,8 @@ exports.getGraphDataFile = () => {
         defaultGraphData.push({
           id: derived,
           parentId: fileMeta.parent?.id,
+          x: Math.random(),
+          y: Math.random(),
         });
       } catch (e) {
         console.log(`error parsing metadata for id ${derived}`);
@@ -265,6 +271,23 @@ exports.getGraphDataFile = () => {
       encoding: "utf-8",
     });
   }
+
+  const fileContent = fs.readFileSync(graphDataFileLocation, {
+    encoding: "utf-8",
+  });
+
+  return JSON.parse(fileContent);
+};
+
+exports.saveGraphDataFile = (data) => {
+  const graphDataFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}sketchesGraphData.json`
+  );
+
+  fs.writeFileSync(graphDataFileLocation, JSON.stringify(data), {
+    encoding: "utf-8",
+  });
 
   const fileContent = fs.readFileSync(graphDataFileLocation, {
     encoding: "utf-8",
