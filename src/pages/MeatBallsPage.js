@@ -12,7 +12,9 @@ const MeatBallsPage = () => {
 
     if (sketchContainer.current) {
       // run sketch
-      sketch = new p5(meatballs, sketchContainer.current);
+      const width = sketchContainer.current.offsetWidth;
+      const height = sketchContainer.current.offsetHeight;
+      sketch = new p5(meatballs({ width, height }), sketchContainer.current);
     }
 
     return () => {
