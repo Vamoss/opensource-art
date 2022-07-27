@@ -1,7 +1,7 @@
 import p5 from "p5";
 import React, { useEffect, useRef, useState } from "react";
 import SideBar from "../components/SideBar";
-import { meatballs } from "../datavis/MeatBalls";
+import { meatballs } from "../datavis/MeatBalls.v2";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import styles from "./Layout.module.css";
 
@@ -45,13 +45,13 @@ const MeatBallsPage = () => {
 
     if (sketchContainer.current) {
       // run sketch
-      const width = sketchContainer.current.offsetWidth;
-      const height = sketchContainer.current.offsetHeight;
+      const windowWidth = sketchContainer.current.offsetWidth;
+      const windowHeight = sketchContainer.current.offsetHeight;
       sketch = new p5(
         meatballs({
-          width,
-          height,
-          data: graphData,
+          windowWidth,
+          windowHeight,
+          graphData,
           selectHandler,
           saveNewGraphData,
         }),
