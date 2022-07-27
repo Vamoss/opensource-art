@@ -16,46 +16,93 @@ import p5 from "p5";
 
 const data = [
   {
-    id: 0,
+    id: "hexagons",
     parentId: null,
+    x: 0.6026535521730414,
+    y: 0.5671328793645689,
+    r: 0.294126063650332,
+    g: 0.05005226596417489,
+    b: 0.20966225220705326,
   },
   {
-    id: 1,
-    parentId: 0,
+    id: "21155d7e-2e10-4654-ad21-aaabed29c636",
+    parentId: "hexagons",
+    x: 0.18209875742161197,
+    y: 0.10792255428298847,
+    r: 0.772030107962673,
+    g: 0.5876241067561825,
+    b: 0.3199331770488718,
   },
   {
-    id: 2,
-    parentId: 0,
+    id: "f780b331-993f-4f83-94b8-27e3876c95a3",
+    parentId: "hexagons",
+    x: 0.9077742756819471,
+    y: 0.8032346451213832,
+    r: 0.8306730917643323,
+    g: 0.7683987457785391,
+    b: 0.10508621249366312,
   },
   {
-    id: 3,
-    parentId: 1,
+    id: "fe8e070a-875b-4ace-8abf-c64d78bc61c0",
+    parentId: "f780b331-993f-4f83-94b8-27e3876c95a3",
+    x: 0.567437685591117,
+    y: 0.16039069121039673,
+    r: 0.41841504877384006,
+    g: 0.4631853348129453,
+    b: 0.8253094920821307,
   },
   {
-    id: 4,
-    parentId: 2,
-  },
-  {
-    id: 5,
-    parentId: 0,
-  },
-  {
-    id: 6,
-    parentId: 0,
-  },
-  {
-    id: 7,
-    parentId: 0,
-  },
-  {
-    id: 8,
-    parentId: 0,
-  },
-  {
-    id: 9,
-    parentId: 0,
+    id: "bbf2258b-6a73-4a67-b242-a3228e3354d1",
+    parentId: "fe8e070a-875b-4ace-8abf-c64d78bc61c0",
+    x: 0.8618626721050151,
+    y: 0.36060545643847064,
+    r: 0.18600936952433234,
+    g: 0.8178323072272655,
+    b: 0.7036855569603648,
   },
 ];
+// [
+//   {
+//     id: 0,
+//     parentId: null,
+//   },
+//   {
+//     id: 1,
+//     parentId: 0,
+//   },
+//   {
+//     id: 2,
+//     parentId: 0,
+//   },
+//   {
+//     id: 3,
+//     parentId: 1,
+//   },
+//   {
+//     id: 4,
+//     parentId: 2,
+//   },
+//   {
+//     id: 5,
+//     parentId: 0,
+//   },
+//   {
+//     id: 6,
+//     parentId: 0,
+//   },
+//   {
+//     id: 7,
+//     parentId: 0,
+//   },
+//   {
+//     id: 8,
+//     parentId: 0,
+//   },
+//   {
+//     id: 9,
+//     parentId: 0,
+//   },
+// ];
 
 const minRadius = 20;
 const maxRadius = 80;
@@ -77,56 +124,13 @@ const STATES = { FREE: 0, OVER: 1, PRESSED: 2 };
 export const meatballs =
   ({ windowWidth, windowHeight, graphData, selectHandler, saveNewGraphData }) =>
   (sketch) => {
-    // decompose o object sketch passado em todas
-    // as funcões do processing usadas na sketch
-    // const {
-    //   createCanvas,
-    //   random,
-    //   floor,
-    //   createVector,
-    //   color,
-    //   constrain,
-    //   map,
-    //   background,
-    //   translate,
-    //   noStroke,
-    //   fill,
-    //   beginShape,
-    //   vertex,
-    //   bezierVertex,
-    //   endShape,
-    //   strokeWeight,
-    //   stroke,
-    //   ellipse,
-    //   dist,
-    //   cursor,
-    //   HAND,
-    //   mouseX,
-    //   mouseY,
-    //   pmouseX,
-    //   pmouseY,
-    //   min,
-    //   max,
-    //   TWO_PI,
-    //   cos,
-    //   sin,
-    //   abs,
-    //   acos,
-    //   atan2,
-    //   ARROW,
-    //   PI,
-    //   HALF_PI,
-    //   width,
-    //   height,
-    // } = sketch;
-
     //  as funções do nativas que o processing pega de hook tem
     //  que ser adicionadas ao objecto sketch passado como argumento
     sketch.setup = () => {
       var canvas = sketch.createCanvas(windowWidth, windowHeight);
       ctx = canvas.drawingContext;
 
-      //*
+      /*
       //generate random points
       //descending from the original
       var total = sketch.random(5, 10);
@@ -148,38 +152,18 @@ export const meatballs =
 
       //add positions, state, color, total children and parent reference
       data.forEach((d) => {
-        d.children = data.filter((d2) => d.id == d2.parentId);
+        d.children = data.filter((d2) => d.id === d2.parentId);
         if (d.parentId !== null) {
           d.pos = sketch.createVector(
             sketch.random(sketch.width),
             sketch.random(sketch.height)
           );
-          d.parent = data.filter((p) => p.id == d.parentId)[0];
-          d.color = sketch.color(
-            sketch.constrain(
-              d.parent.color._getRed() + sketch.random(-80, 80),
-              0,
-              255
-            ),
-            sketch.constrain(
-              d.parent.color._getGreen() + sketch.random(-80, 80),
-              0,
-              255
-            ),
-            sketch.constrain(
-              d.parent.color._getBlue() + sketch.random(-80, 80),
-              0,
-              255
-            )
-          );
+          d.parent = data.find((p) => p.id === d.parentId);
+          d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
         } else {
           d.pos = sketch.createVector(sketch.width / 2, sketch.height / 2);
           d.parent = null;
-          d.color = sketch.color(
-            sketch.random(255),
-            sketch.random(255),
-            sketch.random(255)
-          );
+          d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
         }
 
         d.overColor = sketch.color(
@@ -402,7 +386,7 @@ export const meatballs =
       data.forEach((d) => {
         draggedItem |= d.dragged;
         if (d.state == STATES.PRESSED && !d.dragged) {
-          console.log("selected", d.id);
+          if (typeof selectHandler === "function") selectHandler(d);
         }
       });
       if (draggedItem) calculateBoundbox();

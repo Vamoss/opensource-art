@@ -282,19 +282,11 @@ export const meatballs =
         if (d.parentId !== null) {
           d.pos = sketch.createVector(d.x * sketch.width, d.y * sketch.height);
           d.parent = data.find((p) => p.id === d.parentId);
-          d.color = d.color = sketch.color(
-            sketch.random(255),
-            sketch.random(255),
-            sketch.random(255)
-          );
+          d.color = d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
         } else {
           d.pos = sketch.createVector(sketch.width / 2, sketch.height / 2);
           d.parent = null;
-          d.color = sketch.color(
-            sketch.random(255),
-            sketch.random(255),
-            sketch.random(255)
-          );
+          d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
         }
         d.state = STATES.FREE;
       });

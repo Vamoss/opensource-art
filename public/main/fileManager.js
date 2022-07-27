@@ -233,6 +233,9 @@ exports.getGraphDataFile = () => {
         parentId: null,
         x: Math.random(),
         y: Math.random(),
+        r: Math.random(),
+        g: Math.random(),
+        b: Math.random(),
       });
     });
 
@@ -261,6 +264,9 @@ exports.getGraphDataFile = () => {
           parentId: fileMeta.parent?.id,
           x: Math.random(),
           y: Math.random(),
+          r: Math.random(),
+          g: Math.random(),
+          b: Math.random(),
         });
       } catch (e) {
         console.log(`error parsing metadata for id ${derived}`);

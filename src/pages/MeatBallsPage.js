@@ -8,9 +8,10 @@ import styles from "./Layout.module.css";
 const MeatBallsPage = () => {
   const sketchContainer = useRef();
   const [graphData, setGraphData] = useState([]);
-  const { loadFile } = useFileSystem();
+  const { loadFile, currentInView } = useFileSystem();
 
   const selectHandler = (item) => {
+    if (currentInView.id === item.id) return;
     loadFile({
       id: item.id,
       dir: item.parentId === null ? "initial" : "derived",
@@ -51,7 +52,7 @@ const MeatBallsPage = () => {
         meatballs({
           windowWidth,
           windowHeight,
-          graphData,
+          data: graphData,
           selectHandler,
           saveNewGraphData,
         }),
