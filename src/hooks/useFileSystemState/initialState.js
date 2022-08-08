@@ -2,8 +2,8 @@
 export const defaultPersistentState = {
   // a sketch ativa define qual será a parent caso a atual seja salva
   activeSketch: {
-    id: "circle_draw",
-    name: "circle_draw",
+    id: "initial",
+    name: "initial",
     dir: "initial",
   },
 

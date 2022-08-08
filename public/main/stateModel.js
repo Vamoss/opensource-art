@@ -3,8 +3,8 @@
 const defaultState = {
   // a sketch ativa define qual será a parent caso a atual seja salva
   activeSketch: {
-    id: "circle_draw",
-    name: "circle_draw",
+    id: "initial",
+    name: "initial",
     dir: "initial",
   },
 
@@ -21,7 +21,7 @@ function draw() {
 
   // a sketch carregada para o visualizador
   currentInView: {
-    id: "circle_draw",
+    id: "initial",
     dir: "initial",
   },
 };

@@ -31,8 +31,6 @@ const ensuresFolderStructure = () => {
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`));
 };
 
-ensuresFolderStructure();
-
 /**
  * Save a file to the temp folder.
  * @param {*} file
@@ -84,63 +82,35 @@ exports.saveFile = (file) => {
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
-  const graphDataContent = fs.readFileSync(graphDataFileLocation, {
-    encoding: "utf-8",
-  });
-
-  const graphData = JSON.parse(graphDataContent);
+  const graphData = getGraphDataFile();
 
   graphData.push({
     id: file.name,
     parentId: file?.parent?.id,
-    x: Math.random(),
-    y: Math.random(),
+    r: Math.random(),
+    g: Math.random(),
+    b: Math.random(),
   });
 
-  fs.writeFile(
-    graphDataFileLocation,
-    JSON.stringify(graphData),
-    { encoding: "utf-8" },
-    (err) => {
-      if (err) {
-        console.log("Error Saving file:", err.message);
-        throw err;
-      }
-      console.log("GRAPH updated!");
-    }
-  );
+  fs.writeFileSync(graphDataFileLocation, JSON.stringify(graphData), {
+    encoding: "utf-8",
+  });
 
   // FIM DA ATUALIZAÇÃO DO GRÁFICO
 
-  fs.writeFile(
-    `${fileLocation}/sketch.js`,
-    file.content,
-    { encoding: "utf-8" },
-    (err) => {
-      if (err) {
-        console.log("Error Saving file:", err.message);
-        throw err;
-      }
-      console.log("Saved!");
-    }
-  );
+  fs.writeFileSync(`${fileLocation}/sketch.js`, file.content, {
+    encoding: "utf-8",
+  });
 
-  fs.writeFile(
+  fs.writeFileSync(
     `${fileLocation}/metadata.json`,
     JSON.stringify({ ...file, dir: "derived" }),
-    { encoding: "utf-8" },
-    (err) => {
-      if (err) {
-        console.log("Error Saving file:", err.message);
-        throw err;
-      }
-      console.log("Metadada saved!");
-    }
+    { encoding: "utf-8" }
   );
 };
 
 /**
- * Checa se o arqueivo já existe.
+ * Checa se o arquivo já existe.
  * Atualiza um arquivo.
  */
 exports.updateFile = (file) => {
@@ -210,7 +180,7 @@ exports.updateAppState = (appState) => {
  * Graph data file
  */
 
-exports.getGraphDataFile = () => {
+const getGraphDataFile = () => {
   const graphDataFileLocation = path.join(
     __dirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
@@ -285,11 +255,17 @@ exports.getGraphDataFile = () => {
   return JSON.parse(fileContent);
 };
 
+exports.getGraphDataFile = getGraphDataFile;
+
 exports.saveGraphDataFile = (data) => {
   const graphDataFileLocation = path.join(
     __dirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
+
+  if (!fs.existsSync(graphDataFileLocation)) {
+    getGraphDataFile();
+  }
 
   fs.writeFileSync(graphDataFileLocation, JSON.stringify(data), {
     encoding: "utf-8",
@@ -348,3 +324,6 @@ exports.loadFile = (fileData) => {
     meta: fileMeta,
   };
 };
+
+ensuresFolderStructure();
+getGraphDataFile();

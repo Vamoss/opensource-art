@@ -14,53 +14,7 @@ http://github.com/vamoss
 
 import p5 from "p5";
 
-const data = [
-  {
-    id: "hexagons",
-    parentId: null,
-    x: 0.6026535521730414,
-    y: 0.5671328793645689,
-    r: 0.294126063650332,
-    g: 0.05005226596417489,
-    b: 0.20966225220705326,
-  },
-  {
-    id: "21155d7e-2e10-4654-ad21-aaabed29c636",
-    parentId: "hexagons",
-    x: 0.18209875742161197,
-    y: 0.10792255428298847,
-    r: 0.772030107962673,
-    g: 0.5876241067561825,
-    b: 0.3199331770488718,
-  },
-  {
-    id: "f780b331-993f-4f83-94b8-27e3876c95a3",
-    parentId: "hexagons",
-    x: 0.9077742756819471,
-    y: 0.8032346451213832,
-    r: 0.8306730917643323,
-    g: 0.7683987457785391,
-    b: 0.10508621249366312,
-  },
-  {
-    id: "fe8e070a-875b-4ace-8abf-c64d78bc61c0",
-    parentId: "f780b331-993f-4f83-94b8-27e3876c95a3",
-    x: 0.567437685591117,
-    y: 0.16039069121039673,
-    r: 0.41841504877384006,
-    g: 0.4631853348129453,
-    b: 0.8253094920821307,
-  },
-  {
-    id: "bbf2258b-6a73-4a67-b242-a3228e3354d1",
-    parentId: "fe8e070a-875b-4ace-8abf-c64d78bc61c0",
-    x: 0.8618626721050151,
-    y: 0.36060545643847064,
-    r: 0.18600936952433234,
-    g: 0.8178323072272655,
-    b: 0.7036855569603648,
-  },
-];
+// const data =
 // [
 //   {
 //     id: 0,
@@ -122,7 +76,7 @@ var boundBox;
 
 const STATES = { FREE: 0, OVER: 1, PRESSED: 2 };
 export const meatballs =
-  ({ windowWidth, windowHeight, graphData, selectHandler, saveNewGraphData }) =>
+  ({ windowWidth, windowHeight, data, selectHandler, saveNewGraphData }) =>
   (sketch) => {
     //  as funções do nativas que o processing pega de hook tem
     //  que ser adicionadas ao objecto sketch passado como argumento
@@ -155,8 +109,8 @@ export const meatballs =
         d.children = data.filter((d2) => d.id === d2.parentId);
         if (d.parentId !== null) {
           d.pos = sketch.createVector(
-            sketch.random(sketch.width),
-            sketch.random(sketch.height)
+            d.x ? d.x * sketch.width : sketch.random(sketch.width),
+            d.y ? d.y * sketch.height : sketch.random(sketch.height)
           );
           d.parent = data.find((p) => p.id === d.parentId);
           d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
@@ -204,8 +158,15 @@ export const meatballs =
             ))
       );
 
-      relaxCircle();
+      let noPosItem = data.filter((item) => !item.x || !item.y).length > 0;
+      if (noPosItem) {
+        relaxCircle();
+      }
       calculateBoundbox();
+
+      if (noPosItem) {
+        saveNewGraphData(data, { width: sketch.width, height: sketch.height });
+      }
     };
 
     sketch.draw = () => {
@@ -216,7 +177,7 @@ export const meatballs =
     //update circles pos
     for(var i = 0; i < data.length; i++){
       var d = data[i];
-      if(d.state != STATES.FREE)
+      if(d.state !== STATES.FREE)
         continue;
       
       //noise motion
@@ -264,14 +225,14 @@ export const meatballs =
 
         sketch.beginShape();
         for (var j = 0; j < 4; j++) {
-          if (j == 0) sketch.vertex(path.segments[j].x, path.segments[j].y);
-          else if (j % 2 != 0) {
+          if (j === 0) sketch.vertex(path.segments[j].x, path.segments[j].y);
+          else if (j % 2 !== 0) {
             sketch.vertex(
               path.segments[(j + 1) % 4].x,
               path.segments[(j + 1) % 4].y
             );
           }
-          if (j % 2 != 0) continue;
+          if (j % 2 !== 0) continue;
           sketch.bezierVertex(
             path.segments[j].x + path.handles[j].x,
             path.segments[j].y + path.handles[j].y,
@@ -288,9 +249,9 @@ export const meatballs =
       data.forEach((d) => {
         sketch.strokeWeight(4);
         sketch.stroke(d.color);
-        if (d.state == STATES.FREE) sketch.fill(255);
-        else if (d.state == STATES.OVER) sketch.fill(d.overColor);
-        else if (d.state == STATES.PRESSED) sketch.fill(d.pressColor);
+        if (d.state === STATES.FREE) sketch.fill(255);
+        else if (d.state === STATES.OVER) sketch.fill(d.overColor);
+        else if (d.state === STATES.PRESSED) sketch.fill(d.pressColor);
 
         d.grow = sketch.constrain(d.grow + d.growVel, 0, 1);
         var ease = quarticInOut; //d.growVel > 0 ? elasticOut : elasticIn;
@@ -353,7 +314,7 @@ export const meatballs =
         transY = sketch.max(transY, sketch.height - boundBox.bottom);
       } else {
         data.forEach((d) => {
-          if (d.state == STATES.PRESSED) {
+          if (d.state === STATES.PRESSED) {
             d.dragged = true;
             d.pos.x += sketch.mouseX - sketch.pmouseX;
             d.pos.y += sketch.mouseY - sketch.pmouseY;
@@ -385,7 +346,7 @@ export const meatballs =
       var draggedItem = false;
       data.forEach((d) => {
         draggedItem |= d.dragged;
-        if (d.state == STATES.PRESSED && !d.dragged) {
+        if (d.state === STATES.PRESSED && !d.dragged) {
           if (typeof selectHandler === "function") selectHandler(d);
         }
       });
@@ -426,12 +387,12 @@ export const meatballs =
           lineIntersects |= intersectionPoint;
         }
 
-        if (!lineIntersects || furtherDist == 0) {
+        if (!lineIntersects || furtherDist === 0) {
           //what is the closest distance from others?
           var minDist = 99999;
           for (var j = 0; j < list.length; j++) {
             var otherItem = list[j];
-            if (item == otherItem) continue;
+            if (item === otherItem) continue;
             var distance =
               sketch.dist(x, y, otherItem.pos.x, otherItem.pos.y) -
               item.radius -
@@ -516,7 +477,7 @@ export const meatballs =
       var denominator =
         (line2EndY - line2StartY) * (line1EndX - line1StartX) -
         (line2EndX - line2StartX) * (line1EndY - line1StartY);
-      if (denominator == 0) {
+      if (denominator === 0) {
         return false;
       }
       var a = line1StartY - line2StartY;

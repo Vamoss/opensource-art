@@ -22,17 +22,21 @@ const MeatBallsPage = () => {
     if (data.length === 0) return;
     const dataToSave = data.map((item) => {
       return {
-        id: data.id,
-        parentId: data.parentId,
+        id: item.id,
+        parentId: item.parentId,
+        r: item.r,
+        g: item.g,
+        b: item.b,
         x: item.pos.x / width,
         y: item.pos.y / height,
       };
     });
-    // window.ipcRenderer
-    //   .invoke("app:save-graph-data", dataToSave)
-    //   .then((savedData) => {
-    //     console.log("saved", savedData);
-    //   });
+
+    window.ipcRenderer
+      .invoke("app:save-graph-data", dataToSave)
+      .then((savedData) => {
+        console.log("saved", savedData);
+      });
   };
 
   useEffect(() => {
@@ -42,6 +46,7 @@ const MeatBallsPage = () => {
   }, []);
 
   useEffect(() => {
+    if (graphData.length === 0) return;
     let sketch = null;
 
     if (sketchContainer.current) {
