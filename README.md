@@ -38,3 +38,23 @@ Na pasta /public estão os assets utilizados pelo aplicativo, assim como a parte
 A parte em node se encontra na pasta /public/main, lá também são salvos os conteúdos das sketches.
 
 Arquivos salvos pelo editor vão para a pasta /public/main/data/derivados. Assim eles ficam disponíveis para o visualizador carregar as sketches.
+
+# Como setar a instalação em uma máquina
+
+1 - instalar nodejs e yarn
+
+2 - instalar as dependencias
+
+```
+yarn
+```
+
+3 - colocar o código da sketch mãe no arquivo.
+
+/public/main/data/initial/initial/sketch.js
+
+4 - rodar aplicação
+
+```
+yarn serve
+```
