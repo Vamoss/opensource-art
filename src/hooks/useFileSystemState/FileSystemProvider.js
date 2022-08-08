@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import { FileSystemContext } from "./FileSystemContext";
@@ -8,6 +9,7 @@ import { reducer } from "./reducer";
 
 export const FileSystemProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  let navigate = useNavigate();
 
   const updateCode = (code) => {
     dispatch({ type: "update_code", payload: code });
@@ -98,6 +100,7 @@ export const FileSystemProvider = ({ children }) => {
           type: "update_state",
           payload: newState,
         });
+        navigate("/force-graph");
       });
   };
 

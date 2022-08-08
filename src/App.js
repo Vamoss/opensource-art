@@ -8,16 +8,16 @@ import Viewer from "./pages/Viewer";
 
 function App() {
   return (
-    <FileSystemProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <FileSystemProvider>
         <Routes>
           <Route path="/" element={<CodeEditor />} />
           <Route path="/sketches" element={<Sketches />} />
           <Route path="/force-graph" element={<MeatBallsPage />} />
           <Route path="/viewer" element={<Viewer />} />
         </Routes>
-      </BrowserRouter>
-    </FileSystemProvider>
+      </FileSystemProvider>
+    </BrowserRouter>
   );
 }
 export default App;
