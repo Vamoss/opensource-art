@@ -57,7 +57,7 @@ const ForceGraphPage = () => {
   return (
     <main className={styles.container}>
       <SideBar />
-      <svg ref={svgRef} />
+      <svg className={styles.graph} ref={svgRef} />
     </main>
   );
 };

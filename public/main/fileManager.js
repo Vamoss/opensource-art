@@ -31,8 +31,6 @@ const ensuresFolderStructure = () => {
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`));
 };
 
-ensuresFolderStructure();
-
 /**
  * Save a file to the temp folder.
  * @param {*} file
@@ -84,67 +82,35 @@ exports.saveFile = (file) => {
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
-  const graphDataContent = fs.readFileSync(graphDataFileLocation, {
+  const graphData = getGraphDataFile();
+
+  graphData.push({
+    id: file.name,
+    parentId: file?.parent?.id,
+    r: Math.random(),
+    g: Math.random(),
+    b: Math.random(),
+  });
+
+  fs.writeFileSync(graphDataFileLocation, JSON.stringify(graphData), {
     encoding: "utf-8",
   });
 
-  const graphData = JSON.parse(graphDataContent);
-
-  graphData.links.push({
-    source: file.name,
-    target: file?.parent?.id,
-    value: 1,
-  });
-
-  graphData.nodes.push({
-    id: file.name,
-    group: 2,
-  });
-
-  fs.writeFile(
-    graphDataFileLocation,
-    JSON.stringify(graphData),
-    { encoding: "utf-8" },
-    (err) => {
-      if (err) {
-        console.log("Error Saving file:", err.message);
-        throw err;
-      }
-      console.log("GRAPH updated!");
-    }
-  );
-
   // FIM DA ATUALIZAÇÃO DO GRÁFICO
 
-  fs.writeFile(
-    `${fileLocation}/sketch.js`,
-    file.content,
-    { encoding: "utf-8" },
-    (err) => {
-      if (err) {
-        console.log("Error Saving file:", err.message);
-        throw err;
-      }
-      console.log("Saved!");
-    }
-  );
+  fs.writeFileSync(`${fileLocation}/sketch.js`, file.content, {
+    encoding: "utf-8",
+  });
 
-  fs.writeFile(
+  fs.writeFileSync(
     `${fileLocation}/metadata.json`,
     JSON.stringify({ ...file, dir: "derived" }),
-    { encoding: "utf-8" },
-    (err) => {
-      if (err) {
-        console.log("Error Saving file:", err.message);
-        throw err;
-      }
-      console.log("Metadada saved!");
-    }
+    { encoding: "utf-8" }
   );
 };
 
 /**
- * Checa se o arqueivo já existe.
+ * Checa se o arquivo já existe.
  * Atualiza um arquivo.
  */
 exports.updateFile = (file) => {
@@ -214,7 +180,7 @@ exports.updateAppState = (appState) => {
  * Graph data file
  */
 
-exports.getGraphDataFile = () => {
+const getGraphDataFile = () => {
   const graphDataFileLocation = path.join(
     __dirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
@@ -222,10 +188,7 @@ exports.getGraphDataFile = () => {
 
   if (!fs.existsSync(graphDataFileLocation)) {
     // set initial object for graphdata
-    const defaultGraphData = {
-      nodes: [],
-      links: [],
-    };
+    const defaultGraphData = [];
 
     // check all initial sketches
     const initialSketches = fs.readdirSync(
@@ -235,9 +198,14 @@ exports.getGraphDataFile = () => {
     // pras initial só o nome basta pra criar o node no grafico.
     // elas são os pontos iniciais das redes
     initialSketches.forEach((initial) => {
-      defaultGraphData.nodes.push({
+      defaultGraphData.push({
         id: initial,
-        group: 1,
+        parentId: null,
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random(),
+        g: Math.random(),
+        b: Math.random(),
       });
     });
 
@@ -251,11 +219,6 @@ exports.getGraphDataFile = () => {
     derivedSketches.forEach((derived) => {
       const fileMetaPath = `${derived}/metadata.json`;
 
-      defaultGraphData.nodes.push({
-        id: derived,
-        group: 2,
-      });
-
       const fileMetaContent = fs.readFileSync(
         path.join(
           __dirname,
@@ -266,10 +229,14 @@ exports.getGraphDataFile = () => {
 
       try {
         const fileMeta = JSON.parse(fileMetaContent);
-        defaultGraphData.links.push({
-          source: derived,
-          target: fileMeta.parent?.id,
-          value: 1,
+        defaultGraphData.push({
+          id: derived,
+          parentId: fileMeta.parent?.id,
+          x: Math.random(),
+          y: Math.random(),
+          r: Math.random(),
+          g: Math.random(),
+          b: Math.random(),
         });
       } catch (e) {
         console.log(`error parsing metadata for id ${derived}`);
@@ -280,6 +247,29 @@ exports.getGraphDataFile = () => {
       encoding: "utf-8",
     });
   }
+
+  const fileContent = fs.readFileSync(graphDataFileLocation, {
+    encoding: "utf-8",
+  });
+
+  return JSON.parse(fileContent);
+};
+
+exports.getGraphDataFile = getGraphDataFile;
+
+exports.saveGraphDataFile = (data) => {
+  const graphDataFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}sketchesGraphData.json`
+  );
+
+  if (!fs.existsSync(graphDataFileLocation)) {
+    getGraphDataFile();
+  }
+
+  fs.writeFileSync(graphDataFileLocation, JSON.stringify(data), {
+    encoding: "utf-8",
+  });
 
   const fileContent = fs.readFileSync(graphDataFileLocation, {
     encoding: "utf-8",
@@ -334,3 +324,6 @@ exports.loadFile = (fileData) => {
     meta: fileMeta,
   };
 };
+
+ensuresFolderStructure();
+getGraphDataFile();

@@ -15,9 +15,9 @@ function createWindow() {
   });
 
   win = new BrowserWindow({
-    // width: 800,
-    // height: 600,
-    kiosk: true,
+    width: 800,
+    height: 600,
+    // kiosk: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -27,11 +27,11 @@ function createWindow() {
   win.loadURL("http://localhost:3000");
 
   viewerWin = new BrowserWindow({
-    // width: 800,
-    // height: 600,
-    x: externalDisplay.bounds.x + 50,
-    y: externalDisplay.bounds.y + 50,
-    kiosk: true,
+    width: 800,
+    height: 600,
+    // x: externalDisplay.bounds.x + 50,
+    // y: externalDisplay.bounds.y + 50,
+    // kiosk: true,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, "preload.js"),
@@ -105,6 +105,11 @@ ipcMain.handle("app:save-file", (ev, file) => {
 
 ipcMain.handle("app:get-graph-data", () => {
   const graphData = fileManager.getGraphDataFile();
+  return graphData;
+});
+
+ipcMain.handle("app:save-graph-data", (ev, data) => {
+  const graphData = fileManager.saveGraphDataFile(data);
   return graphData;
 });
 

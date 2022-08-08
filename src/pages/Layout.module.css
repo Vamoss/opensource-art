@@ -12,3 +12,14 @@
 .codeContainer * {
   font-size: 1.2rem;
 }
+
+.graph {
+  height: 100% !important;
+  width: 100% !important;
+  overflow: hidden;
+}
+
+.graph canvas {
+  height: 100% !important;
+  width: 100% !important;
+}

@@ -10,7 +10,7 @@ import SVGSave from "./SVGSave";
 import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
 
 const SideBar = () => {
-  const { activeSketch, runSketch, saveFile } = useFileSystem();
+  const { runSketch, saveFile } = useFileSystem();
 
   return (
     <nav className={styles.sidebar}>
