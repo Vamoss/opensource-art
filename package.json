@@ -27,7 +27,9 @@
     "eject": "react-scripts eject",
     "serve": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron:start\"",
     "electron:start": "wait-on tcp:3000 && electron .",
-    "electron:build": ""
+    "electron:build": "",
+    "purge-data": "rm -rf ./public/main/data/derived && rm -rf ./public/main/data/temp && rm ./public/main/data/appstate.json && rm ./public/main/data/sketchesGraphData.json",
+    "fresh-start": "yarn purge-data && yarn serve"
   },
   "eslintConfig": {
     "extends": [

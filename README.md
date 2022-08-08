@@ -12,6 +12,15 @@ yarn
 yarn serve
 ```
 
+### deletar os dados persistentes e rodar o app
+
+Esse comando vai perder todas as sketches geradas até então.
+Usar com cuidado.
+
+```
+yarn fresh-start
+```
+
 ## Estrutura do aplicativo
 
 O aplicativo abre duas janelas.
