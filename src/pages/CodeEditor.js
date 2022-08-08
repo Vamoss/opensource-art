@@ -15,7 +15,7 @@ const CodeEditor = () => {
 
   return (
     <main className={styles.container}>
-      <SideBar />
+      <SideBar hasPlay />
       <section className={styles.codeContainer}>
         <CodeMirror
           value={code}

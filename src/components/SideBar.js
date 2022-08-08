@@ -9,7 +9,7 @@ import SVGNetwork from "./SVGNetwork";
 import SVGSave from "./SVGSave";
 import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
 
-const SideBar = () => {
+const SideBar = ({ hasPlay }) => {
   const { runSketch, saveFile } = useFileSystem();
 
   return (
@@ -29,16 +29,18 @@ const SideBar = () => {
         </ToolTip>
       </Link>
       <h2 className={styles.title}>Ações</h2>
-      <button className={styles.button} onClick={runSketch}>
-        <ToolTip title="Rodar Sketch">
-          <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
-        </ToolTip>
-      </button>
       <button className={styles.button} onClick={saveFile}>
         <ToolTip title="Salvar Sketch">
           <SVGParticlesGenWrapper SVGComponent={SVGSave} />
         </ToolTip>
       </button>
+      {hasPlay && (
+        <button className={styles.button} onClick={runSketch}>
+          <ToolTip title="Rodar Sketch">
+            <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
+          </ToolTip>
+        </button>
+      )}
     </nav>
   );
 };
