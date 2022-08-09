@@ -130,3 +130,7 @@ ipcMain.on("app:run-sketch", (ev, file) => {
 ipcMain.on("app:update-file", (ev, file) => {
   fileManager.updateFile(file);
 });
+
+ipcMain.on("app:editor-user-interaction", () => {
+  viewerWin.webContents.send("app:server-user-interaction");
+});

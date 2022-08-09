@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { javascript } from "@codemirror/lang-javascript";
@@ -12,6 +13,19 @@ const CodeEditor = () => {
   const onChange = (value) => {
     updateCode(value);
   };
+
+  useEffect(() => {
+    const sendUserInteractionEvent = () => {
+      window.ipcRenderer.send("app:editor-user-interaction");
+    };
+    window.addEventListener("mousemove", sendUserInteractionEvent);
+    window.addEventListener("keydown", sendUserInteractionEvent);
+
+    return () => {
+      window.removeEventListener("mousemove", sendUserInteractionEvent);
+      window.removeEventListener("keydown", sendUserInteractionEvent);
+    };
+  }, []);
 
   return (
     <main className={styles.container}>

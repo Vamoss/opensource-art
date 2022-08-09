@@ -40,6 +40,19 @@ const MeatBallsPage = () => {
   };
 
   useEffect(() => {
+    const sendUserInteractionEvent = () => {
+      window.ipcRenderer.send("app:editor-user-interaction");
+    };
+    window.addEventListener("mousemove", sendUserInteractionEvent);
+    window.addEventListener("keydown", sendUserInteractionEvent);
+
+    return () => {
+      window.removeEventListener("mousemove", sendUserInteractionEvent);
+      window.removeEventListener("keydown", sendUserInteractionEvent);
+    };
+  }, []);
+
+  useEffect(() => {
     window.ipcRenderer.invoke("app:get-graph-data").then((newGraphData) => {
       setGraphData(newGraphData);
     });

@@ -5,13 +5,17 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("ipcRenderer", {
   send: (channel, data) => {
     // whitelist channels
-    let validChannels = ["app:run-sketch", "app:update-file"];
+    let validChannels = [
+      "app:run-sketch",
+      "app:update-file",
+      "app:editor-user-interaction",
+    ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
   receive: (channel, func) => {
-    let validChannels = [];
+    let validChannels = ["app:server-user-interaction"];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args));
