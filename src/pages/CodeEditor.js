@@ -2,7 +2,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 import { javascript } from "@codemirror/lang-javascript";
 import { useFileSystem } from "../hooks/useFileSystemState";
-import SideBar from "../components/SideBar";
+import SideBar, { SideBarActions } from "../components/SideBar";
 
 import styles from "./Layout.module.css";
 
@@ -15,7 +15,7 @@ const CodeEditor = () => {
 
   return (
     <main className={styles.container}>
-      <SideBar hasPlay />
+      <SideBar actions={<SideBarActions />} />
       <section className={styles.codeContainer}>
         <CodeMirror
           value={code}

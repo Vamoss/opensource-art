@@ -9,9 +9,27 @@ import SVGNetwork from "./SVGNetwork";
 import SVGSave from "./SVGSave";
 import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
 
-const SideBar = ({ hasPlay }) => {
+export const SideBarActions = () => {
   const { runSketch, saveFile } = useFileSystem();
 
+  return (
+    <>
+      <h2 className={styles.title}>Ações</h2>
+      <button className={styles.button} onClick={saveFile}>
+        <ToolTip title="Salvar Sketch">
+          <SVGParticlesGenWrapper SVGComponent={SVGSave} />
+        </ToolTip>
+      </button>
+      <button className={styles.button} onClick={runSketch}>
+        <ToolTip title="Rodar Sketch">
+          <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
+        </ToolTip>
+      </button>
+    </>
+  );
+};
+
+const SideBar = ({ actions }) => {
   return (
     <nav className={styles.sidebar}>
       <h2 className={styles.title}>Nav</h2>
@@ -28,19 +46,7 @@ const SideBar = ({ hasPlay }) => {
           <SVGParticlesGenWrapper SVGComponent={SVGNetwork} />
         </ToolTip>
       </Link>
-      <h2 className={styles.title}>Ações</h2>
-      <button className={styles.button} onClick={saveFile}>
-        <ToolTip title="Salvar Sketch">
-          <SVGParticlesGenWrapper SVGComponent={SVGSave} />
-        </ToolTip>
-      </button>
-      {hasPlay && (
-        <button className={styles.button} onClick={runSketch}>
-          <ToolTip title="Rodar Sketch">
-            <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
-          </ToolTip>
-        </button>
-      )}
+      {actions}
     </nav>
   );
 };
