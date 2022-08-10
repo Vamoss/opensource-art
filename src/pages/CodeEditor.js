@@ -4,7 +4,6 @@ import { dracula } from "@uiw/codemirror-theme-dracula";
 import { javascript } from "@codemirror/lang-javascript";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import SideBar, { SideBarActions } from "../components/SideBar";
-import ErrorBar from "../components/ErrorBar";
 
 import styles from "./Layout.module.css";
 
@@ -40,7 +39,6 @@ const CodeEditor = () => {
           theme={dracula}
         />
       </section>
-      <ErrorBar />
     </main>
   );
 };
