@@ -63,6 +63,10 @@ const Viewer = () => {
       }
     };
 
+    window.onerror = (message, source, lineno, colno, error) => {
+      window.ipcRenderer.invoke('app:error', {message, source, lineno, colno, error});
+    };
+
     sketchScript.src = `/main/data/${currentInView.dir}/${filePath}`;
   }, [currentInView]);
 

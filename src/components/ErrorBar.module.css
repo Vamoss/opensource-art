@@ -1,0 +1,17 @@
+.errorbar {
+  background-color: #ff3c00;
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  padding: 20px;
+  color: antiquewhite;
+  border-radius: 10px;
+}
+
+.errorbar h3{
+    margin: 0px;
+}
+
+.errorbar p{
+    margin: 0px;
+}

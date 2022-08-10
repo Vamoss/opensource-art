@@ -134,3 +134,7 @@ ipcMain.on("app:update-file", (ev, file) => {
 ipcMain.on("app:editor-user-interaction", () => {
   viewerWin.webContents.send("app:server-user-interaction");
 });
+
+ipcMain.handle("app:error", (ev, errorData) => {
+  console.log(errorData);
+});
