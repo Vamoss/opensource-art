@@ -38,7 +38,7 @@ const frases = [
   "Existe [%ai] [%s] completamente nov[%ad]?",
   "De onde surgiu [%ad] [%s] que escrevi?",
   "Quem veio antes? A arte ou o código?",
-  "[%ai] [%s] consegue ser aleatório?",
+  "[%ai] [%s] consegue ser aleatóri[%ad]?",
   "[%ai] [%s] consegue repetir a mesma tarefa sempre?",
   "[%ai] [%s] consegue ser aleatório?",
   "Quem decidiu programar [%ad] [%s]?",
@@ -70,7 +70,7 @@ function setup() {
     });
   }
 
-  mappedSize = map(width, 400, 900, 50, 110);
+  mappedSize = 150;
   textSize(mappedSize);
   textLeading(mappedSize * 1.05);
   textFont(font);
@@ -97,6 +97,8 @@ function newMessage() {
   message = message.replaceAll("[%ai]", _ai);
   message = message.replaceAll("[%pd3]", _pd3);
   message = message.replaceAll("[%pp3]", _pp3);
+
+  message = message.charAt(0).toUpperCase() + message.slice(1);
 
   message = wrapText(message, width - 40);
 
