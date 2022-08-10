@@ -8,15 +8,7 @@ export const defaultPersistentState = {
   },
 
   // o código carregado para o editor
-  code: `function setup() {
-    createCanvas(400, 400);
-  }
-  
-  function draw() {
-    fill(255);
-    ellipse(mouseX, mouseY, 80, 80);
-  }
-  `,
+  code: null,
 
   // a sketch carregada para o visualizador
   currentInView: null,

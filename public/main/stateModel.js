@@ -1,3 +1,4 @@
+const { loadFile } = require("./fileManager");
 // esse objeto está copiado também no front.
 // depois unificar com o de lá
 const defaultState = {
@@ -41,4 +42,10 @@ exports.updateStateToActivateSketchFromFile = (file) => {
   };
 };
 
-exports.getDefaultState = () => defaultState;
+exports.getDefaultState = () => {
+  const defaultFile = loadFile(defaultState.activeSketch);
+  return {
+    ...defaultState,
+    code: defaultFile.content,
+  };
+};

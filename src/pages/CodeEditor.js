@@ -31,13 +31,15 @@ const CodeEditor = () => {
     <main className={styles.container}>
       <SideBar actions={<SideBarActions />} />
       <section className={styles.codeContainer}>
-        <CodeMirror
-          value={code}
-          height="50%"
-          extensions={[javascript()]}
-          onChange={onChange}
-          theme={dracula}
-        />
+        {code && (
+          <CodeMirror
+            value={code}
+            height="50%"
+            extensions={[javascript()]}
+            onChange={onChange}
+            theme={dracula}
+          />
+        )}
       </section>
     </main>
   );
