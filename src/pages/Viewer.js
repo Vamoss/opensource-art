@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFileSystem } from "../hooks/useFileSystemState";
+import ErrorBar from "../components/ErrorBar";
 
 const SCREEN_SAVER_WAITING_TIME = 5 * 60 * 1000; // 5 min
 
 const Viewer = () => {
   const { currentInView } = useFileSystem();
+  const [sketchError, setSketchError] = useState(null);
 
   useEffect(() => {
     var screenSaverTimer = null;
@@ -63,10 +65,24 @@ const Viewer = () => {
       }
     };
 
+    window.onerror = (message, source, lineno, colno, error) => {
+      setSketchError({
+        message,
+        source,
+        lineno,
+        colno,
+        error,
+      });
+    };
+
     sketchScript.src = `/main/data/${currentInView.dir}/${filePath}`;
   }, [currentInView]);
 
-  return <></>;
+  return (
+    sketchError && (
+      <ErrorBar message={sketchError?.message} lineno={sketchError?.lineno} />
+    )
+  );
 };
 
 export default Viewer;
