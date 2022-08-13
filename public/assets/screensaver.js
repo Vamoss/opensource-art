@@ -40,7 +40,6 @@ const frases = [
   "Quem veio antes? A arte ou o código?",
   "[%ai] [%s] consegue ser aleatóri[%ad]?",
   "[%ai] [%s] consegue repetir a mesma tarefa sempre?",
-  "[%ai] [%s] consegue ser aleatório?",
   "Quem decidiu programar [%ad] [%s]?",
   "Você já tentou programar [%ai] [%s]?",
 ];
@@ -70,7 +69,7 @@ function setup() {
     });
   }
 
-  mappedSize = 150;
+  mappedSize = 120;
   textSize(mappedSize);
   textLeading(mappedSize * 1.05);
   textFont(font);
@@ -105,7 +104,7 @@ function newMessage() {
   var textHeight = textLeading() * (message.split("\n").length - 1);
   textY = random(textLeading(), height - textHeight - textLeading());
 
-  setTimeout(newMessage, 7000);
+  setTimeout(newMessage, 13000);
   fadeIn = 0;
 
   if (textColor == 255) {
