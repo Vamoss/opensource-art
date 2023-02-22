@@ -25,6 +25,8 @@ function createWindow() {
     },
   });
 
+  //win.webContents.openDevTools()
+
   win.loadURL("http://localhost:3000");
 
   viewerWin = new BrowserWindow({

@@ -1,112 +1,73 @@
-/******************
-Code by Vamoss
-Original code link:
-https://www.openprocessing.org/sketch/744884
+const lados = 6
 
-Author links:
-http://vamoss.com.br
-http://twitter.com/vamoss
-http://github.com/vamoss
-******************/
+var tamanho = 30
 
-//Original inspiration
-//https://twitter.com/AidaInma/status/1161205965305393154
+var cores
+var contaCor = 0
 
-const radius = 100;
-const altitude = (Math.sqrt(3) / 2) * radius;
-let hexagons, hexagonPattern, rotations;
-let changed = -1;
+var pos = {}
+var dir = 1
+var raio = 5
+var angulo = 0
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-
-  let hexagonMask = createGraphics(radius * 2, radius * 2);
-  hexagonMask.beginShape();
-  for (let a = 0; a < TWO_PI; a += TWO_PI / 6) {
-    let x = sin(a) * radius + radius;
-    let y = cos(a) * radius + radius;
-    hexagonMask.vertex(x, y);
-  }
-  hexagonMask.endShape();
-
-  let hexagonLines = createGraphics(radius * 2, radius * 2);
-  hexagonLines.noFill();
-  hexagonLines.strokeWeight(20);
-  hexagonLines.ellipse(radius - altitude, radius - radius / 2, radius, radius);
-  hexagonLines.ellipse(radius + altitude * 2, radius, radius * 3, radius * 3);
-  hexagonLines.ellipse(
-    radius + altitude,
-    radius + radius * 1.5,
-    radius * 3,
-    radius * 3
-  );
-  hexagonLines.strokeWeight(16);
-  hexagonLines.stroke(255);
-  hexagonLines.ellipse(radius - altitude, radius - radius / 2, radius, radius);
-  hexagonLines.ellipse(radius + altitude * 2, radius, radius * 3, radius * 3);
-  hexagonLines.ellipse(
-    radius + altitude,
-    radius + radius * 1.5,
-    radius * 3,
-    radius * 3
-  );
-
-  hexagonPattern = createGraphics(radius * 2, radius * 2);
-  hexagonPattern.image(hexagonMask, 0, 0);
-  hexagonPattern.drawingContext.globalCompositeOperation = "source-in";
-  hexagonPattern.image(hexagonLines, 0, 0);
-
-  rotations = [];
-  hexagons = [];
-  for (let x = -radius; x < width; x += altitude * 2) {
-    let rowCount = 0;
-    for (let y = -radius; y < height; y += radius * 1.5) {
-      hexagons.push({
-        x: x + (rowCount % 2 == 0 ? 0 : altitude),
-        y: y,
-        rotation: 0,
-      });
-      rotations.push((TWO_PI / 6) * floor(random(6)));
-      rowCount++;
-    }
-  }
+	createCanvas(windowWidth, windowHeight)
+	background(0)
+	strokeWeight(2)
+	
+	cores = [color("#2b2244"), color("#581845"), color("#900C3F"), color("#C70039"), color("#e32c36"), color("#FF5733"), color("#FFC30F"), color("#24fffb"), color("#2b2244")]
+	
+	pos = {x: width/2, y: height/2}
+	prevPos = {x: pos.x, y: pos.y}
 }
 
-function draw() {
-  background(255);
-  hexagons.forEach((hexagon, index) => {
-    hexagon.rotation += (rotations[index] - hexagon.rotation) * 0.09;
-    push();
-    translate(hexagon.x + radius, hexagon.y + radius);
-    rotate(hexagon.rotation);
-    translate(-(hexagon.x + radius), -(hexagon.y + radius));
-    image(hexagonPattern, hexagon.x, hexagon.y);
-    pop();
-  });
+function draw() {	
+	angulo += 1/raio*dir
+
+	var posicaoXAnterior = pos.x
+	var posicaoYAnterior = pos.y
+	pos.x += cos(angulo) * raio
+	pos.y += sin(angulo) * raio
+
+	//variação de cores
+	contaCor += noise(frameCount/1000)/200
+	var col = graduacaoDeCores(contaCor%1, cores)
+	
+	//desenha
+	for(var a = 0; a < TWO_PI; a += TWO_PI/lados){
+		push()
+			translate(width/2, height/2)
+			rotate(a)
+			translate(-width/2, -height/2)
+		
+			strokeWeight(tamanho)
+			noFill()
+			stroke(col)
+			line(posicaoXAnterior, posicaoYAnterior, pos.x, pos.y)
+		pop()
+	}
+		
+	//muda a direção
+	if(pos.x < (tamanho+10) || pos.x > width-(tamanho+10) || pos.y < (tamanho+10) || pos.y > height-(tamanho+10)){
+		//se colidir com a borda
+		angulo += PI * dir
+	}else{
+		//ou aleatoriamente
+		if(random() < 0.05) dir *= -1
+		if(random() < 0.05) raio = random(5, 8)
+	}
 }
 
-function findClosest() {
-  let closest = 0;
-  let closestDistance = 9999;
-  hexagons.forEach((hexagon, index) => {
-    let d = dist(mouseX, mouseY, hexagon.x + radius, hexagon.y + radius);
-    if (d < closestDistance) {
-      closestDistance = d;
-      closest = index;
-    }
-  });
-  return closest;
-}
+function graduacaoDeCores(percentagem, cores)
+{
+	var i = Math.floor(percentagem*(cores.length-1))
+	if(i < 0) return cores[0]
+	if(i >= cores.length-1) return cores[cores.length-1]
 
-function mousePressed() {
-  changed = findClosest();
-  rotations[changed] += TWO_PI / 6;
-}
-
-function mouseMoved() {
-  let tempChanged = findClosest();
-  if (changed != tempChanged) {
-    changed = tempChanged;
-    rotations[changed] += TWO_PI / 6;
-  }
+	var percent = (percentagem - i / (cores.length-1)) * (cores.length-1)
+	return color(
+		cores[i]._getRed() + percent*(cores[i+1]._getRed()-cores[i]._getRed()),
+		cores[i]._getGreen() + percent*(cores[i+1]._getGreen()-cores[i]._getGreen()),
+		cores[i]._getBlue() + percent*(cores[i+1]._getBlue()-cores[i]._getBlue())
+	)
 }
