@@ -1,5 +1,7 @@
 # Open Source Art
 
+### Compatível com a versão 16.14 do Node.js
+
 ### instalar
 
 ```
