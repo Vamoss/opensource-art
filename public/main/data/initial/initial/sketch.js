@@ -13,7 +13,7 @@ function setup() {
 		// Qual o tamanho da área de desenho?
 		// O primeiro número define a largura
 		// O segundo define a altura
-		createCanvas(1920, 1080);
+		createCanvas(1080, 1080);
 	
 		// Construindo o Physarum
 		// É nele que o comportamento de todos os agentes é gerenciado
@@ -71,4 +71,3 @@ function draw() {
 		// Desenhamos os agentes em suas novas posições
 		physarum.draw();
 }
-
