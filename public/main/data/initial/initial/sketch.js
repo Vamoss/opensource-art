@@ -1,73 +1,74 @@
-const lados = 6
+var numero_de_agentes = 4000;	// numero de agentes
+var distancia_sensorial = 6;	// quão longe o agente procura comida
+var angulo_sensorial = 40;		// quão ampla é a visão do agente
+var velocidade_do_giro = 0.3;	// quão rápido o agente gira
+var velocidade = 6;						// quão rápido o agente se move
+var fator_decaimento = 0.8;		// quão rápido a comida acaba se o agente não caminhar sobre ela
+var deposito_comida = 0.4;		// quanta comida é depositada quando o agente caminha
+var giro_aleatorio = false;		// o agente gira aleatoriamente
 
-var tamanho = 30
-
-var cores
-var contaCor = 0
-
-var pos = {}
-var dir = 1
-var raio = 5
-var angulo = 0
+var physarum;
 
 function setup() {
-	createCanvas(windowWidth, windowHeight)
-	background(0)
-	strokeWeight(2)
+		// Qual o tamanho da área de desenho?
+		// O primeiro número define a largura
+		// O segundo define a altura
+		createCanvas(1920, 1080);
 	
-	cores = [color("#2b2244"), color("#581845"), color("#900C3F"), color("#C70039"), color("#e32c36"), color("#FF5733"), color("#FFC30F"), color("#24fffb"), color("#2b2244")]
+		// Construindo o Physarum
+		// É nele que o comportamento de todos os agentes é gerenciado
+		// Os parâmetros da função foram definidos pelas varíaveis no início do código
+		physarum = new Physarum(width, height, drawingContext, distancia_sensorial, angulo_sensorial, velocidade_do_giro, velocidade, fator_decaimento, deposito_comida, giro_aleatorio);
+
+		// As variável "cores" define as cores possíveis para os agentes
+		// Note que as cores são descritas por 3 números.
+		// Este é o sistema de cor RGB (Red+Green+Blue ou Vermelho+Verde+Azul).
+		// O primeiro número manipula a quantidade de Vermelho, que vai de 0 à 255
+		// O segundo número manipula a quantidade de Verde, que vai de 0 à 255
+		// O terceiro número manipula a quantidade de Azul, que vai de 0 à 255
+		var cores = [color(255, 0, 0), color(0, 255, 0), color(0, 0, 255)];
 	
-	pos = {x: width/2, y: height/2}
-	prevPos = {x: pos.x, y: pos.y}
+	
+		// Vamos adicionar os agentes
+		// São milhares de agentes para adicionar
+		// Por isso utilizamos o for, um laço de repetição (looping) 
+		for (let i = 0; i < numero_de_agentes; ++i) {
+				// utilizamos a aleatoriedade para cada vez que adicionamos um agente
+				var x = random(0, width);// x vai receber um valor entre 0 e a largura da tela
+				var y = random(0, height);// y vai receber um valor entre 0 e a altura da tela
+				var angulo = random(360);// o angulo vai ficar entre 0 e 360
+				var cor = random(cores);// e a cor vai receber uma das cores que definimos anteriormente
+			
+				// com as variaveis definidas, adicionamos nosso agente no Physarum
+				physarum.addAgent(x, y, angulo, cor);
+		}
 }
 
-function draw() {	
-	angulo += 1/raio*dir
-
-	var posicaoXAnterior = pos.x
-	var posicaoYAnterior = pos.y
-	pos.x += cos(angulo) * raio
-	pos.y += sin(angulo) * raio
-
-	//variação de cores
-	contaCor += noise(frameCount/1000)/200
-	var col = graduacaoDeCores(contaCor%1, cores)
+function draw() {
+		// vamos definir a cor de fundo
+		// o preto é definido pelos 3 primeiros números em 0
+		// o 0 é a intensidade mínima, ou seja, desligado
+		// o 4 número é a transparência, que também pode variar entre 0 e 255
+		// com a transparência em 10, podemos apagar o fundo gradualmente
+		// e assim ver o rastro dos agentes
+		var corDeFundo = color(0, 0, 0, 10);
 	
-	//desenha
-	for(var a = 0; a < TWO_PI; a += TWO_PI/lados){
-		push()
-			translate(width/2, height/2)
-			rotate(a)
-			translate(-width/2, -height/2)
-		
-			strokeWeight(tamanho)
-			noFill()
-			stroke(col)
-			line(posicaoXAnterior, posicaoYAnterior, pos.x, pos.y)
-		pop()
-	}
-		
-	//muda a direção
-	if(pos.x < (tamanho+10) || pos.x > width-(tamanho+10) || pos.y < (tamanho+10) || pos.y > height-(tamanho+10)){
-		//se colidir com a borda
-		angulo += PI * dir
-	}else{
-		//ou aleatoriamente
-		if(random() < 0.05) dir *= -1
-		if(random() < 0.05) raio = random(5, 8)
-	}
+		// definimos a cor de preenchimento com a função fill()
+		fill(corDeFundo);
+	
+		// tiramos a linha de contorno da forma que vamos desenhar
+		noStroke();
+	
+		// pintamos um retângulo com a cor de preenchimento
+		// a posição do retângulo fica no x=0 e no y=0
+		// a largura e altura utiliza as dimensões da tela
+		rect(0, 0, width, height);
+
+		// Atualizamos o Physarum
+		// Dentro dessa função ele calcula a posição de todos os agentes
+		physarum.update(); 
+	
+		// Desenhamos os agentes em suas novas posições
+		physarum.draw();
 }
 
-function graduacaoDeCores(percentagem, cores)
-{
-	var i = Math.floor(percentagem*(cores.length-1))
-	if(i < 0) return cores[0]
-	if(i >= cores.length-1) return cores[cores.length-1]
-
-	var percent = (percentagem - i / (cores.length-1)) * (cores.length-1)
-	return color(
-		cores[i]._getRed() + percent*(cores[i+1]._getRed()-cores[i]._getRed()),
-		cores[i]._getGreen() + percent*(cores[i+1]._getGreen()-cores[i]._getGreen()),
-		cores[i]._getBlue() + percent*(cores[i+1]._getBlue()-cores[i]._getBlue())
-	)
-}
