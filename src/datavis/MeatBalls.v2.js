@@ -107,12 +107,16 @@ export const meatballs =
       //add positions, state, color, total children and parent reference
       data.forEach((d) => {
         d.children = data.filter((d2) => d.id === d2.parentId);
+        d.parent = data.find((p) => p.id === d.parentId);
         if (d.parentId !== null) {
-          d.pos = sketch.createVector(
-            d.x ? d.x * sketch.width : sketch.random(sketch.width),
-            d.y ? d.y * sketch.height : sketch.random(sketch.height)
-          );
-          d.parent = data.find((p) => p.id === d.parentId);
+          if(d.x && d.y){
+            d.pos = sketch.createVector(
+              d.x * sketch.width,
+              d.y * sketch.height
+            );
+          }else{
+            d.pos = findSpot(d);
+          }
           d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
         } else {
           d.pos = sketch.createVector(sketch.width / 2, sketch.height / 2);
@@ -158,15 +162,16 @@ export const meatballs =
             ))
       );
 
-      let noPosItem = data.filter((item) => !item.x || !item.y).length > 0;
-      if (noPosItem) {
-        relaxCircle();
-      }
-      calculateBoundbox();
-
-      if (noPosItem) {
+      let noPosItens = data.filter((item) => !item.x || !item.y);
+      if (noPosItens.length > 0) {
+        noPosItens.forEach(d => {
+          d.x = d.pos.x / sketch.width;
+          d.y = d.pos.y / sketch.height;
+        });
         saveNewGraphData(data, { width: sketch.width, height: sketch.height });
       }
+
+      calculateBoundbox();
     };
 
     sketch.draw = () => {
@@ -246,16 +251,20 @@ export const meatballs =
       });
 
       //draw circles
-      data.forEach((d) => {
+      data.forEach((d, i) => {
         sketch.strokeWeight(4);
         sketch.stroke(d.color);
         if (d.state === STATES.FREE) sketch.fill(255);
         else if (d.state === STATES.OVER) sketch.fill(d.overColor);
         else if (d.state === STATES.PRESSED) sketch.fill(d.pressColor);
 
+        var pulse = 0;
+        if(i == data.length-1){
+          pulse = (Math.sin(sketch.frameCount/10)+1)/2 * 30 + 20;
+        }
         d.grow = sketch.constrain(d.grow + d.growVel, 0, 1);
         var ease = quarticInOut; //d.growVel > 0 ? elasticOut : elasticIn;
-        d.radius = d.originalRadius + ease(d.grow) * 20;
+        d.radius = d.originalRadius + ease(d.grow) * 20 + pulse;
 
         sketch.ellipse(d.pos.x, d.pos.y, d.radius - 4, d.radius - 4);
 
@@ -353,91 +362,30 @@ export const meatballs =
       if (draggedItem) calculateBoundbox();
     };
 
-    function findSpot(parent, item, list, lines) {
-      var furtherX = 0;
-      var furtherY = 0;
-      var furtherDist = 0;
-      var found = false;
-      var minFurtherDist = 40;
-      var maxFurtherDist = 150;
-      for (var k = 0; k < 1000 && furtherDist < minFurtherDist; k++) {
-        //make a random position around x and y
-        var angle = sketch.random(sketch.TWO_PI);
-        var radius =
-          parent.radius / 2 +
-          item.radius / 2 +
-          sketch.random(10, maxFurtherDist);
-        maxFurtherDist += 0.5;
-        var x = parent.pos.x + sketch.cos(angle) * radius;
-        var y = parent.pos.y + sketch.sin(angle) * radius;
-
-        //find line intersections
-        var lineIntersects = false;
-        for (var j = 0; j < lines.length && !lineIntersects; j++) {
-          var intersectionPoint = checkLineIntersection(
-            parent.pos.x,
-            parent.pos.y,
-            x,
-            y,
-            lines[j].x1,
-            lines[j].y1,
-            lines[j].x2,
-            lines[j].y2
-          );
-          lineIntersects |= intersectionPoint;
-        }
-
-        if (!lineIntersects || furtherDist === 0) {
-          //what is the closest distance from others?
+    function findSpot(item) {
+      var furtherPos = {x: sketch.width/2, y: sketch.height/2};
+      if(item.parent){
+        furtherPos = {x: item.parent.pos.x, y: item.parent.pos.y};
+        var furtherDist = 0;
+        for(var i = 0; i < 100; i++){
+          var x = item.parent.pos.x + sketch.random(-100, 100);
+          var y = item.parent.pos.y + sketch.random(-100, 100);
           var minDist = 99999;
-          for (var j = 0; j < list.length; j++) {
-            var otherItem = list[j];
-            if (item === otherItem) continue;
-            var distance =
-              sketch.dist(x, y, otherItem.pos.x, otherItem.pos.y) -
-              item.radius -
-              otherItem.radius;
-            if (distance < minDist) {
-              minDist = distance;
+          data.forEach(d => {
+            if(item.id !== d.id){
+              var distance = sketch.dist(x, y, d.pos.x, d.pos.y);
+              if(distance < minDist)
+                minDist = distance;
             }
-          }
-
-          //is the minimal distance further than the furthest found?
-          if (minDist > furtherDist) {
-            if (!lineIntersects) furtherDist = minDist;
-            furtherX = x;
-            furtherY = y;
-            found = true;
+          });
+          if(minDist > furtherDist){
+            furtherDist = minDist;
+            furtherPos.x = x;
+            furtherPos.y = y;
           }
         }
       }
-      //if(!found) console.log("perfect spot not found");
-      item.pos.x = furtherX;
-      item.pos.y = furtherY;
-    }
-
-    function addItem(item, list, lines, level) {
-      item.children.forEach((child) => {
-        findSpot(item, child, list, lines);
-        list.push(child);
-        lines.push({
-          x1: item.pos.x,
-          y1: item.pos.y,
-          x2: child.pos.x,
-          y2: child.pos.y,
-        });
-      });
-      item.children.forEach((child) => {
-        addItem(child, list, lines, level + 1);
-      });
-    }
-
-    function relaxCircle() {
-      var added = [];
-      var lines = [];
-      var level = 0;
-      added.push(data[0]);
-      addItem(data[0], added, lines, level);
+      return furtherPos;
     }
 
     function calculateBoundbox() {
