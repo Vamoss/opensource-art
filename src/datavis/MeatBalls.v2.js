@@ -367,8 +367,8 @@ export const meatballs =
       if(item.parent){
         furtherPos = {x: item.parent.pos.x, y: item.parent.pos.y};
         var furtherDist = 0;
-        var maxRadius = sketch.map(item.parent.children.length, 1, 30, 100, 500);
-        var maxIterations = sketch.map(item.parent.children.length, 1, 30, 10, 100);
+        var maxRadius = sketch.map(item.parent.children.length, 1, 30, 100, 500, true);
+        var maxIterations = sketch.map(item.parent.children.length, 1, 30, 10, 100, true);
         for(var i = 0; i < maxIterations; i++){
           var x = item.parent.pos.x + sketch.random(-maxRadius, maxRadius);
           var y = item.parent.pos.y + sketch.random(-maxRadius, maxRadius);
