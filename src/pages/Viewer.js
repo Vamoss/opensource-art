@@ -63,8 +63,18 @@ const Viewer = () => {
         pscript.id = `p5script`;
         document.body.appendChild(pscript);
       }
+      
+      //carrega o Physarum
+      let physarum = document.getElementById("physarumscript");
+      if (physarum === null) {
+      physarum = document.createElement("script");
+      physarum.setAttribute("defer", true);
+      physarum.src = `/vendor/physarum.js`;
+      physarum.id = `physarumscript`;
+      document.body.appendChild(physarum);
+      }
     };
-
+ 
     window.onerror = (message, source, lineno, colno, error) => {
       setSketchError({
         message,
