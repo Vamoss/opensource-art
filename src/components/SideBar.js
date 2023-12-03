@@ -8,10 +8,12 @@ import SVGCode from "./SVGCode";
 import SVGNetwork from "./SVGNetwork";
 import SVGSave from "./SVGSave";
 import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
+import { LanguageSelector } from "./LanguageSelector";
+import { useLocalization } from "../hooks/useLocalization";
 
 export const SideBarActions = () => {
   const { runSketch, saveFile } = useFileSystem();
-
+  
   return (
     <>
       <h2 className={styles.title}>Ações</h2>
@@ -25,16 +27,19 @@ export const SideBarActions = () => {
           <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
         </ToolTip>
       </button>
+      <LanguageSelector />
     </>
   );
 };
 
 const SideBar = ({ actions }) => {
+  const { translations } = useLocalization()
+  
   return (
     <nav className={styles.sidebar}>
       <h2 className={styles.title}>Nav</h2>
       <Link to="/" className={styles.button}>
-        <ToolTip title="código">
+        <ToolTip title={translations.codigo}>
           <SVGParticlesGenWrapper SVGComponent={SVGCode} />
         </ToolTip>
       </Link>

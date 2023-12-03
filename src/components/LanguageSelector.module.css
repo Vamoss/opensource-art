@@ -1,0 +1,34 @@
+.container {
+  width: 100px;
+  position: relative;
+}
+
+.button {
+  border: none;
+  background: #30264b;
+  color: white;
+  border-bottom: 2px solid #604f8f;
+  cursor: pointer;
+  height: 80px;
+  width: 100%;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:hover {
+  background: #1f153a;
+}
+
+.expandableContainer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateX(100%);
+  z-index: 1;
+}
+
+.languageOptions {
+  display: flex;
+}
