@@ -15,8 +15,8 @@ function createWindow() {
   });
 
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    // width: 800,
+    // height: 600,
     kiosk: true,
     autoHideMenuBar: true,
     webPreferences: {
@@ -30,8 +30,8 @@ function createWindow() {
   win.loadURL("http://localhost:3000");
 
   viewerWin = new BrowserWindow({
-    width: 800,
-    height: 600,
+    // width: 800,
+    // height: 600,
     x: externalDisplay.bounds.x + 50,
     y: externalDisplay.bounds.y + 50,
     kiosk: true,
