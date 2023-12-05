@@ -11,19 +11,20 @@ import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
 import { LanguageSelector } from "./LanguageSelector";
 import { useLocalization } from "../hooks/useLocalization";
 
-export const SideBarActions = () => {
+const SideBarActions = () => {
+  const { translations } = useLocalization()
   const { runSketch, saveFile } = useFileSystem();
   
   return (
     <>
-      <h2 className={styles.title}>Ações</h2>
+      <h2 className={styles.title}>{translations.nav_title_action}</h2>
       <button className={styles.button} onClick={saveFile}>
-        <ToolTip title="Salvar Sketch">
+        <ToolTip title={translations.nav_tooltip_salvar_sketch}>
           <SVGParticlesGenWrapper SVGComponent={SVGSave} />
         </ToolTip>
       </button>
       <button className={styles.button} onClick={runSketch}>
-        <ToolTip title="Rodar Sketch">
+        <ToolTip title={translations.nav_tooltip_rodar_sketch}>
           <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
         </ToolTip>
       </button>
@@ -32,14 +33,14 @@ export const SideBarActions = () => {
   );
 };
 
-const SideBar = ({ actions }) => {
+const SideBarNav = () => {
   const { translations } = useLocalization()
-  
+
   return (
-    <nav className={styles.sidebar}>
-      <h2 className={styles.title}>Nav</h2>
+    <>
+      <h2 className={styles.title}>{translations.nav_title_nav}</h2>
       <Link to="/" className={styles.button}>
-        <ToolTip title={translations.codigo}>
+        <ToolTip title={translations.nav_tooltip_codigo}>
           <SVGParticlesGenWrapper SVGComponent={SVGCode} />
         </ToolTip>
       </Link>
@@ -47,11 +48,19 @@ const SideBar = ({ actions }) => {
         Sketches
       </Link> */}
       <Link to="/force-graph" className={styles.button}>
-        <ToolTip title="Arquivo">
+        <ToolTip title={translations.nav_tooltip_arquivo}>
           <SVGParticlesGenWrapper SVGComponent={SVGNetwork} />
         </ToolTip>
       </Link>
-      {actions}
+    </>
+  )
+}
+
+const SideBar = () => {
+  return (
+    <nav className={styles.sidebar}>
+      <SideBarNav />
+      <SideBarActions />
     </nav>
   );
 };

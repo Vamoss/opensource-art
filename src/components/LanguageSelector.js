@@ -27,11 +27,11 @@ export const LanguageSelector = () => {
             <button 
               className={styles.button}
               onClick={() => changeLanguage(ingles)}
-            >Ingles</button>
+            >English</button>
             <button 
               className={styles.button}
               onClick={() => changeLanguage(espanhol)}
-            >Espanhol</button>
+            >Español</button>
           </div>
         </div>
       }
