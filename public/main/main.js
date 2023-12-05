@@ -136,3 +136,7 @@ ipcMain.on("app:update-file", (ev, file) => {
 ipcMain.on("app:editor-user-interaction", () => {
   viewerWin.webContents.send("app:server-user-interaction");
 });
+
+ipcMain.on("app:editor-change-language", (ev, language) => {
+  viewerWin.webContents.send("app:server-change-language", language);
+});

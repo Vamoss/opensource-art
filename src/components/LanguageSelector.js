@@ -11,6 +11,11 @@ export const LanguageSelector = () => {
   const [isOpen, setIsOpen] = useState(true)
   const { changeLanguage } = useLocalization()
 
+  const performLanguageChange = (language) => {
+    window.ipcRenderer.send("app:editor-change-language", language);
+    changeLanguage(language)
+  }
+
   return (
     <div className={styles.container}>
       <button className={styles.button} onClick={() => setIsOpen(!isOpen)}>
@@ -22,15 +27,15 @@ export const LanguageSelector = () => {
           <div className={styles.languageOptions}>
             <button 
               className={styles.button}
-              onClick={() => changeLanguage(portugues)}
+              onClick={() => performLanguageChange(portugues)}
             >Portugues</button>
             <button 
               className={styles.button}
-              onClick={() => changeLanguage(ingles)}
+              onClick={() => performLanguageChange(ingles)}
             >English</button>
             <button 
               className={styles.button}
-              onClick={() => changeLanguage(espanhol)}
+              onClick={() => performLanguageChange(espanhol)}
             >Español</button>
           </div>
         </div>

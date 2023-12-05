@@ -5,7 +5,7 @@ var tamanho = 30
 var cores
 var contaCor = 10
 
-var pos = {}
+var pos = 
 var dir = 1
 var raio = 10
 var angulo = 0
