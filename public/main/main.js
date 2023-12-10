@@ -9,15 +9,15 @@ let win;
 let viewerWin;
 
 function createWindow() {
-  // let displays = screen.getAllDisplays();
-  // let externalDisplay = displays.find((display) => {
-  //   return display.bounds.x !== 0 || display.bounds.y !== 0;
-  // });
+  let displays = screen.getAllDisplays();
+  let externalDisplay = displays.find((display) => {
+    return display.bounds.x !== 0 || display.bounds.y !== 0;
+  });
 
   win = new BrowserWindow({
     // width: 800,
     // height: 600,
-    // kiosk: true,
+    kiosk: true,
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
@@ -30,11 +30,11 @@ function createWindow() {
   win.loadURL("http://localhost:3000");
 
   viewerWin = new BrowserWindow({
-    width: 800,
-    height: 600,
-    // x: externalDisplay.bounds.x + 50,
-    // y: externalDisplay.bounds.y + 50,
-    // kiosk: true,
+    // width: 800,
+    // height: 600,
+    x: externalDisplay.bounds.x + 50,
+    y: externalDisplay.bounds.y + 50,
+    kiosk: true,
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
