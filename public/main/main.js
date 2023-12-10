@@ -68,11 +68,13 @@ app.on("activate", () => {
  */
 const loadFile = (ev, fileData) => {
   const file = fileManager.loadFile(fileData);
-  fileManager.updateAppState(
-    stateModel.updateStateToActivateSketchFromFile(file)
-  );
-  viewerWin.webContents.send("app:reload-viewer", file);
-  return file;
+  if (file) {
+    fileManager.updateAppState(
+      stateModel.updateStateToActivateSketchFromFile(file)
+    );
+    viewerWin.webContents.send("app:reload-viewer", file);
+    return file;
+  }
 };
 
 // Comunição entre o browser e o nativo
@@ -95,7 +97,7 @@ ipcMain.handle("app:load-file", loadFile);
 
 ipcMain.handle("app:save-file", (ev, file) => {
   fileManager.saveFile(file);
-
+  
   loadFile(null, {
     name: file.name,
     id: file.id,
