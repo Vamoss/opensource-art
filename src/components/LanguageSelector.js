@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "./LanguageSelector.module.css";
 import {
   useLocalization,
@@ -12,9 +12,17 @@ export const LanguageSelector = () => {
   const { changeLanguage, isCurrentLanguage } = useLocalization()
 
   const performLanguageChange = (language) => {
+    localStorage.setItem("activeLanguage", language);
     window.ipcRenderer.send("app:editor-change-language", language);
     changeLanguage(language)
   }
+
+  useEffect(() => {
+    const activeLanguage = localStorage.getItem("activeLanguage");
+    if (activeLanguage) {
+      performLanguageChange(activeLanguage)
+    }
+  }, [])
 
   return (
     <div className={styles.container}>
