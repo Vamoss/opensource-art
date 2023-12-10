@@ -17,9 +17,13 @@ export const LocalizationProvider = ({ children }) => {
     return state.translations[key]
   }
 
+  const isCurrentLanguage = (language) => {
+    return language === state.language
+  }
+
   return (
     <LocalizationContext.Provider
-      value={{ ...state, changeLanguage, getTextByKey }}
+      value={{ ...state, changeLanguage, isCurrentLanguage, getTextByKey }}
     >
       {children}
     </LocalizationContext.Provider>

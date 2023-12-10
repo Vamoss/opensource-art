@@ -21,6 +21,21 @@
   background: #1f153a;
 }
 
+.button_small {
+  height: 30px;
+}
+
+.button_active {
+  pointer-events: none;
+  background: #9584c4;
+  color: #30264b;
+}
+
+.button_active:hover {
+  background: #9584c4;
+  color: #30264b;
+}
+
 .expandableContainer {
   position: absolute;
   right: 0;
@@ -31,4 +46,5 @@
 
 .languageOptions {
   display: flex;
+  flex-direction: column;
 }
