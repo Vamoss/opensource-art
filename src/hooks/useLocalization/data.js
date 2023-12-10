@@ -16,7 +16,7 @@ export const translations = [
     translations : {
       pt: 'Ações',
       en: 'Actions',
-      es: 'Ações'
+      es: 'Acciónes'
     }
   }
   ,{
@@ -32,7 +32,7 @@ export const translations = [
     translations : {
       pt: 'Arquivo',
       en: 'Archive',
-      es: 'Arquivo'
+      es: 'Archivo'
     }
   }
   ,{
@@ -40,7 +40,7 @@ export const translations = [
     translations : {
       pt: 'Salvar sketch',
       en: 'Save sketch',
-      es: 'Salvar sketch'
+      es: 'Guardar sketch'
     }
   }
   ,{
@@ -48,7 +48,7 @@ export const translations = [
     translations : {
       pt: 'Rodar sketch',
       en: 'Run sketch',
-      es: 'Rodar sketch'
+      es: 'Ejecutar sketch'
     }
   }
   ,{
@@ -56,7 +56,7 @@ export const translations = [
     translations : {
       pt: 'Encontrei um erro na linha',
       en: 'There was an error at line',
-      es: 'Encontrei um erro na linha'
+      es: 'Hubo un error en la línea'
     }
   }
 ]
