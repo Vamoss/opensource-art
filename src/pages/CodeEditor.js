@@ -55,7 +55,7 @@ const CodeEditor = () => {
 
   return (
     <main className={styles.container}>
-      <SideBar />
+      <SideBar hasActions />
       <section className={styles.codeContainer}>
         {code && (
           <CodeMirror

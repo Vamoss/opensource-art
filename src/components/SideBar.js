@@ -56,11 +56,11 @@ const SideBarNav = () => {
   )
 }
 
-const SideBar = () => {
+const SideBar = ({ hasActions = false }) => {
   return (
     <nav className={styles.sidebar}>
       <SideBarNav />
-      <SideBarActions />
+      {hasActions && <SideBarActions />}
     </nav>
   );
 };

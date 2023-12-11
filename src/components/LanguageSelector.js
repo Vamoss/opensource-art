@@ -25,7 +25,11 @@ export const LanguageSelector = () => {
   }, [])
 
   return (
-    <div className={styles.container}>
+    <div 
+      className={styles.container} 
+      onMouseEnter={() => setIsOpen(true)} 
+      onMouseLeave={() => setIsOpen(false)}
+    >
       <button className={styles.button} onClick={() => setIsOpen(!isOpen)}>
         language
       </button>
