@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "app:update-file",
       "app:editor-user-interaction",
       "app:editor-change-language",
+      "app:admin-run-command",
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);

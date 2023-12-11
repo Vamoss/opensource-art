@@ -325,5 +325,12 @@ exports.loadFile = (fileData) => {
   };
 };
 
-ensuresFolderStructure();
-getGraphDataFile();
+
+const bootInstalation = () => {
+  ensuresFolderStructure();
+  getGraphDataFile();
+}
+
+exports.bootInstalation = bootInstalation
+
+bootInstalation()

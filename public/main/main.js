@@ -4,6 +4,7 @@ const { app, BrowserWindow, screen, ipcMain } = require("electron");
 
 const fileManager = require("./fileManager");
 const stateModel = require("./stateModel");
+const admin = require("./admin")
 
 let win;
 let viewerWin;
@@ -142,3 +143,7 @@ ipcMain.on("app:editor-user-interaction", () => {
 ipcMain.on("app:editor-change-language", (ev, language) => {
   viewerWin.webContents.send("app:server-change-language", language);
 });
+
+ipcMain.on("app:admin-run-command", (ev, { command }) => {
+  admin.runCommand(command)
+})
