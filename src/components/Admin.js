@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './Admin.module.css'
 
 const REINICIAR_MESSAGE = 'Tem certeza que voce quer reiniciar a instalação, todos os dados serão perdidos caso não tenha feito o backup.'
@@ -20,13 +20,48 @@ const MODAL_DATA = {
   },
 }
 
+const KONAMY_CODE = [
+  'ArrowUp',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowLeft',
+  'ArrowRight',
+  'b',
+  'a'
+]
+
+let konami_index = 0
+
+const PASSWORD = 'this is the pass'
+
 const Admin = () => {
+  const [passwordModalOpen, setIsPasswordModalOpen] = useState(false)
+  const [password, setPassword] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [modalData, setModalData] = useState(null)
   
-  window.openAdmin = () => {
-    setIsOpen(true)
+  const handleKeydown = (e) => {
+    if (KONAMY_CODE[konami_index] === e.key) {
+      konami_index += 1
+    } else {
+      konami_index = 0
+    }
+
+    if (konami_index >= KONAMY_CODE.length) {
+      setIsPasswordModalOpen(true)
+    }
   }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown)
+    }
+  }, [])
 
   const triggerCommand = (command) => {
     window.ipcRenderer.send("app:admin-run-command", {
@@ -38,6 +73,35 @@ const Admin = () => {
 
   return (
     <>
+    {
+      passwordModalOpen &&  
+      <div className={styles.modal}>
+        <input 
+          className={styles.input} 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+        />
+        <div className={styles.modalControls}>
+          <button 
+            className={styles.btn}
+            onClick={() => {
+              setIsPasswordModalOpen(false)
+              setPassword('')
+            }}
+          >cancela</button>
+          <button
+            className={styles.btn}
+            onClick={() => {
+              if (password === PASSWORD) {
+                setIsPasswordModalOpen(false)
+                setPassword('')
+                setIsOpen(true)
+              }
+            }}
+          >confirma</button>
+        </div>
+      </div>
+    }
     {
       isOpen &&  
       <div className={styles.container}>
