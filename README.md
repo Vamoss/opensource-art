@@ -23,6 +23,14 @@ Usar com cuidado.
 yarn fresh-start
 ```
 
+### Interface admin
+
+Abra o console do browser em uma das janelas do applicativo e entre o seguinte comando.
+
+```
+openAdmin()
+```
+
 ## Estrutura do aplicativo
 
 O aplicativo abre duas janelas.

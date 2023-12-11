@@ -82,12 +82,19 @@ const loadFile = (ev, fileData) => {
 
 ipcMain.handle("app:get-app-state", () => {
   const appState = fileManager.getAppState(stateModel.getDefaultState());
-  const file = fileManager.loadFile(appState.currentInView);
-  return {
-    ...appState,
-    // carrega a atual versão do current in view pra mostrar o código quando inicia o app
-    code: file.content,
-  };
+  try {
+    const file = fileManager.loadFile(appState.currentInView);
+    return {
+      ...appState,
+      // carrega a atual versão do current in view pra mostrar o código quando inicia o app
+      code: file.content,
+    };
+  } catch (e) {
+    fileManager.bootInstalation()
+    return {
+      ...stateModel.getDefaultState()
+    };
+  }
 });
 
 ipcMain.handle("app:get-files", () => {
