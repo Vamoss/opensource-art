@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import styles from "./LanguageSelector.module.css";
 import {
   useLocalization,
@@ -6,23 +6,25 @@ import {
   ingles,
   portugues
 } from "../hooks/useLocalization";
+import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
+import SVGLanguage from "./SVGLanguage";
 
 export const LanguageSelector = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { changeLanguage, isCurrentLanguage } = useLocalization()
 
-  const performLanguageChange = (language) => {
+  const performLanguageChange = useCallback((language) => {
     localStorage.setItem("activeLanguage", language);
     window.ipcRenderer.send("app:editor-change-language", language);
     changeLanguage(language)
-  }
-
+  }, [changeLanguage])
+  
   useEffect(() => {
     const activeLanguage = localStorage.getItem("activeLanguage");
     if (activeLanguage) {
       performLanguageChange(activeLanguage)
     }
-  }, [])
+  }, [performLanguageChange])
 
   return (
     <div 
@@ -31,7 +33,7 @@ export const LanguageSelector = () => {
       onMouseLeave={() => setIsOpen(false)}
     >
       <button className={styles.button} onClick={() => setIsOpen(!isOpen)}>
-        language
+        <SVGParticlesGenWrapper SVGComponent={SVGLanguage} />
       </button>
       {
         isOpen &&
