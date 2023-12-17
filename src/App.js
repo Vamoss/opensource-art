@@ -21,10 +21,10 @@ function App() {
               <Route path="/viewer" element={<Viewer />} />
               <Route path="/screen-saver" element={<ScreenSaver />} />
             </Routes>
+            <Admin />
           </FileSystemProvider>
         </LocalizationProvider>
       </BrowserRouter>
-      <Admin />
     </>
   );
 }

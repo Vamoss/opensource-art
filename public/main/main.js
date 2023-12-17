@@ -151,6 +151,6 @@ ipcMain.on("app:editor-change-language", (ev, language) => {
   viewerWin.webContents.send("app:server-change-language", language);
 });
 
-ipcMain.on("app:admin-run-command", (ev, { command }) => {
-  admin.runCommand(command)
+ipcMain.on("app:admin-run-command", (ev, { command, data }) => {
+  admin.runCommand(command, data)
 })

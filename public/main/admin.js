@@ -1,6 +1,7 @@
 const path = require('path');
 const { spawn } = require('child_process'); // See https://github.com/calvinmetcalf/rollup-plugin-node-builtins/issues/50
 const fileManager = require('./fileManager');
+const stateModel = require('./stateModel');
 
 /**
  * @public
@@ -20,8 +21,7 @@ const runScript = (scriptName, cb) => {
   });
 }
 
-
-exports.runCommand = (command) => {
+exports.runCommand = (command, data) => {
   switch (command) {
     case 'reiniciar-instalacao':
       runScript('cleanup.sh', () => {
@@ -32,6 +32,9 @@ exports.runCommand = (command) => {
       runScript('create-backup.sh')
       break;
     case 'remover-sketch':
+      if (data && data.id) {
+        fileManager.removeNodeFromGraph(data.id, stateModel.getDefaultState())
+      }
       break;
     default:
       break;
