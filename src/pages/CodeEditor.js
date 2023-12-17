@@ -26,17 +26,19 @@ const CodeEditor = () => {
   const onEditorCreate = (view) => {
     view.focus()
     const localStorageCursorPosition = localStorage.getItem("cursorPosition");
-    try {
-      // dispatches the cursor position event and scrolls into view
-      view.dispatch({
-        selection: {
-          anchor: localStorageCursorPosition,
-          head: localStorageCursorPosition
-        },
-        scrollIntoView: true
-      })
-    } catch(e) {
-      console.warn(e)
+    if(localStorageCursorPosition) {
+      try {
+        // dispatches the cursor position event and scrolls into view
+        view.dispatch({
+          selection: {
+            anchor: localStorageCursorPosition,
+            head: localStorageCursorPosition
+          },
+          scrollIntoView: true
+        })
+      } catch(e) {
+        console.warn(e)
+      }
     }
   }
 
