@@ -16,6 +16,7 @@ const MeatBallsPage = () => {
       return {
         id: item.id,
         parentId: item.parentId,
+        originalParentId: item.parentId,
         r: item.r,
         g: item.g,
         b: item.b,

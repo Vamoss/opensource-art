@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import styles from './Admin.module.css'
+import { useFileSystem } from '../hooks/useFileSystemState'
 
 const REINICIAR_MESSAGE = 'Tem certeza que voce quer reiniciar a instalação, todos os dados serão perdidos caso não tenha feito o backup.'
 const CRIAR_BACKUP_MESSAGE = 'Tem certeza que voce quer criar o backup da instalação?'
@@ -42,6 +43,7 @@ const Admin = () => {
   const [password, setPassword] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [modalData, setModalData] = useState(null)
+  const { activeSketch } = useFileSystem();
   
   const handleKeydown = (e) => {
     if (KONAMY_CODE[konami_index] === e.key) {
@@ -63,9 +65,12 @@ const Admin = () => {
     }
   }, [])
 
-  const triggerCommand = (command) => {
+  const triggerCommand = () => {
     window.ipcRenderer.send("app:admin-run-command", {
-      command: modalData.command
+      command: modalData.command,
+      data: {
+        id: activeSketch?.id
+      }
     })
 
     setModalData(null)
@@ -105,6 +110,9 @@ const Admin = () => {
     {
       isOpen &&  
       <div className={styles.container}>
+        <p className={styles.text}>Admin</p>
+        <p className={styles.text}>active sketch {activeSketch.id}</p>
+
           <button
             onClick={() => setIsOpen(false)} 
             className={`${styles.btn} ${styles.closeBtn}`}
