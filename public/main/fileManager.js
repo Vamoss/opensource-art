@@ -87,6 +87,7 @@ exports.saveFile = (file) => {
   graphData.push({
     id: file.name,
     parentId: file?.parent?.id,
+    originalParentId: file?.parent?.id,
     r: Math.random(),
     g: Math.random(),
     b: Math.random(),
@@ -108,6 +109,63 @@ exports.saveFile = (file) => {
     { encoding: "utf-8" }
   );
 };
+
+/**
+ * Remove um node do grafico
+ */
+exports.removeNodeFromGraph = (id, defaultState) => {
+  // never remove the initial sketch
+  if (id === 'initial') {
+    return;
+  }
+
+  const stateFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}appstate.json`
+  );
+
+  // load the graph data
+  const graphDataFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}sketchesGraphData.json`
+  );
+  
+  const graphData = getGraphDataFile();
+
+  let nodeToRemoveParentId = null;
+  
+  // filter out the node to remove
+  // get its parent id
+  const filteredGraphData = graphData.filter((node) => {
+    if (node.id === id) {
+      nodeToRemoveParentId = node.parentId;
+    }
+
+    return node.id != id;
+  });
+
+  // update the parent id of all nodes that had the node to remove as parent
+  const mappedGraphData = filteredGraphData.map((node) => {
+    if(node.parentId === id) {
+      return {
+        ...node,
+        parentId: nodeToRemoveParentId,
+      }
+    }
+
+    return {...node};
+  });
+
+  // save the file
+  fs.writeFileSync(graphDataFileLocation, JSON.stringify(mappedGraphData), {
+    encoding: "utf-8",
+  });
+
+  // reset appstate
+  fs.writeFileSync(stateFileLocation, JSON.stringify(defaultState), {
+    encoding: "utf-8",
+  });
+}
 
 /**
  * Checa se o arquivo já existe.
@@ -201,6 +259,7 @@ const getGraphDataFile = () => {
       defaultGraphData.push({
         id: initial,
         parentId: null,
+        originalParentId: null,
         x: Math.random(),
         y: Math.random(),
         r: Math.random(),
@@ -232,6 +291,7 @@ const getGraphDataFile = () => {
         defaultGraphData.push({
           id: derived,
           parentId: fileMeta.parent?.id,
+          originalParentId: fileMeta.parent?.id,
           x: Math.random(),
           y: Math.random(),
           r: Math.random(),
@@ -325,5 +385,12 @@ exports.loadFile = (fileData) => {
   };
 };
 
-ensuresFolderStructure();
-getGraphDataFile();
+
+const bootInstalation = () => {
+  ensuresFolderStructure();
+  getGraphDataFile();
+}
+
+exports.bootInstalation = bootInstalation
+
+bootInstalation()

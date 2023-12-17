@@ -4,6 +4,7 @@ const { app, BrowserWindow, screen, ipcMain } = require("electron");
 
 const fileManager = require("./fileManager");
 const stateModel = require("./stateModel");
+const admin = require("./admin")
 
 let win;
 let viewerWin;
@@ -68,23 +69,32 @@ app.on("activate", () => {
  */
 const loadFile = (ev, fileData) => {
   const file = fileManager.loadFile(fileData);
-  fileManager.updateAppState(
-    stateModel.updateStateToActivateSketchFromFile(file)
-  );
-  viewerWin.webContents.send("app:reload-viewer", file);
-  return file;
+  if (file) {
+    fileManager.updateAppState(
+      stateModel.updateStateToActivateSketchFromFile(file)
+    );
+    viewerWin.webContents.send("app:reload-viewer", file);
+    return file;
+  }
 };
 
 // Comunição entre o browser e o nativo
 
 ipcMain.handle("app:get-app-state", () => {
   const appState = fileManager.getAppState(stateModel.getDefaultState());
-  const file = fileManager.loadFile(appState.currentInView);
-  return {
-    ...appState,
-    // carrega a atual versão do current in view pra mostrar o código quando inicia o app
-    code: file.content,
-  };
+  try {
+    const file = fileManager.loadFile(appState.currentInView);
+    return {
+      ...appState,
+      // carrega a atual versão do current in view pra mostrar o código quando inicia o app
+      code: file.content,
+    };
+  } catch (e) {
+    fileManager.bootInstalation()
+    return {
+      ...stateModel.getDefaultState()
+    };
+  }
 });
 
 ipcMain.handle("app:get-files", () => {
@@ -95,7 +105,7 @@ ipcMain.handle("app:load-file", loadFile);
 
 ipcMain.handle("app:save-file", (ev, file) => {
   fileManager.saveFile(file);
-
+  
   loadFile(null, {
     name: file.name,
     id: file.id,
@@ -136,3 +146,11 @@ ipcMain.on("app:update-file", (ev, file) => {
 ipcMain.on("app:editor-user-interaction", () => {
   viewerWin.webContents.send("app:server-user-interaction");
 });
+
+ipcMain.on("app:editor-change-language", (ev, language) => {
+  viewerWin.webContents.send("app:server-change-language", language);
+});
+
+ipcMain.on("app:admin-run-command", (ev, { command, data }) => {
+  admin.runCommand(command, data)
+})
