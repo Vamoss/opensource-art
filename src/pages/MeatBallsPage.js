@@ -10,14 +10,6 @@ const MeatBallsPage = () => {
   const [graphData, setGraphData] = useState([]);
   const { loadFile, currentInView } = useFileSystem();
 
-  const selectHandler = (item) => {
-    if (currentInView.id === item.id) return;
-    loadFile({
-      id: item.id,
-      dir: item.parentId === null ? "initial" : "derived",
-    });
-  };
-
   const saveNewGraphData = (data, { width, height }) => {
     if (data.length === 0) return;
     const dataToSave = data.map((item) => {
@@ -62,6 +54,14 @@ const MeatBallsPage = () => {
     if (graphData.length === 0) return;
     let sketch = null;
 
+    const selectHandler = (item) => {
+      if (currentInView.id === item.id) return;
+      loadFile({
+        id: item.id,
+        dir: item.parentId === null ? "initial" : "derived",
+      });
+    };
+
     if (sketchContainer.current) {
       // run sketch
       const windowWidth = sketchContainer.current.offsetWidth;
@@ -84,7 +84,7 @@ const MeatBallsPage = () => {
         sketch.remove();
       }
     };
-  }, [graphData]);
+  }, [graphData, loadFile, currentInView]);
 
   return (
     <main className={styles.container}>

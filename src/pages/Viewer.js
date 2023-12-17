@@ -38,7 +38,7 @@ const Viewer = () => {
       window.removeEventListener("mousemove", resetTimeout);
       if (screenSaverTimer) clearTimeout(screenSaverTimer);
     };
-  }, []);
+  }, [changeLanguage]);
 
   useEffect(() => {
     if (currentInView === null) {
