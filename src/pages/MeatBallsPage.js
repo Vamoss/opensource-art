@@ -1,7 +1,7 @@
 import p5 from "p5";
 import React, { useEffect, useRef, useState } from "react";
 import SideBar from "../components/SideBar";
-import { meatballs } from "../datavis/MeatBalls.v2";
+import { meatballs } from "../datavis/MeatBalls.v3";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import styles from "./Layout.module.css";
 
@@ -72,7 +72,6 @@ const MeatBallsPage = () => {
           windowHeight,
           data: graphData,
           selectHandler,
-          saveNewGraphData,
         }),
         sketchContainer.current
       );
@@ -80,6 +79,8 @@ const MeatBallsPage = () => {
 
     return () => {
       if (sketch !== null) {
+        //save positions before unmount
+        saveNewGraphData(graphData, {width: sketch.width, height: sketch.height})
         // destroy sketch
         sketch.remove();
       }
