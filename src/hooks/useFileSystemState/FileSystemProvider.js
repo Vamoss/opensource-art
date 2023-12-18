@@ -7,6 +7,8 @@ import { getFileMetaData } from "./getFileMeta";
 import { defaultPersistentState, initialState } from "./initialState";
 import { reducer } from "./reducer";
 
+const ALLOW_RUN_SKETCH_DEBOUNCE_TIME = 1000
+
 export const FileSystemProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   let navigate = useNavigate();
@@ -14,6 +16,21 @@ export const FileSystemProvider = ({ children }) => {
   const updateCode = (code) => {
     dispatch({ type: "update_code", payload: code });
   };
+
+  useEffect(() => {
+    let allowRunSketchTimeout = null
+    if(!state.canRunSketch) {
+      allowRunSketchTimeout = setTimeout(() => {
+        dispatch({ type: "allow_run_sketch" })
+      }, ALLOW_RUN_SKETCH_DEBOUNCE_TIME)
+    };
+
+    return () => {
+      if (allowRunSketchTimeout) {
+        clearTimeout(allowRunSketchTimeout)
+      }
+    }
+  })
 
   /**
    * Internal methods comunication with file system
@@ -41,6 +58,9 @@ export const FileSystemProvider = ({ children }) => {
    */
 
   const runSketch = () => {
+    if (!state.canRunSketch) {
+      return
+    }
     const sketchName = `${uuidv4()}.js`;
     window.ipcRenderer.send("app:run-sketch", {
       id: sketchName,
@@ -106,7 +126,13 @@ export const FileSystemProvider = ({ children }) => {
 
   return (
     <FileSystemContext.Provider
-      value={{ ...state, updateCode, runSketch, loadFile, saveFile }}
+      value={{ 
+        ...state,
+        updateCode,
+        runSketch,
+        loadFile,
+        saveFile 
+      }}
     >
       {children}
     </FileSystemContext.Provider>
