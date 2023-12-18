@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
@@ -112,16 +112,17 @@ export const FileSystemProvider = ({ children }) => {
     );
     window.ipcRenderer
       .invoke("app:save-file", fileMetaData)
-      .then((newState) => {
-        if (newState === null) {
-          return;
-        }
-        dispatch({
-          type: "update_state",
-          payload: newState,
-        });
-        navigate("/force-graph");
-      });
+      // .then((newState) => {
+      //   if (newState === null) {
+      //     return;
+      //   }
+      //   dispatch({
+      //     type: "update_state",
+      //     payload: newState,
+      //   });
+      //   navigate("/force-graph");
+      // })
+      navigate("/force-graph");
   };
 
   return (
