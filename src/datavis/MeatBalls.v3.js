@@ -99,6 +99,13 @@ export const meatballs =
           d.pos = sketch.createVector(sketch.width / 2, sketch.height / 2);
           d.parent = null;
           d.color = sketch.color(sketch.random(255), sketch.random(255), sketch.random(255));
+          if (d.id === 'initial') {
+            d.pos = sketch.createVector(
+              d.x * sketch.width,
+              d.y * sketch.height
+            );
+            d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
+          }
         }
 
         d.overColor = sketch.color(
