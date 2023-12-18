@@ -14,6 +14,9 @@ import {
   ingles,
   portugues
 } from "../hooks/useLocalization";
+import SVGPT from "./SVGPT";
+import SVGEN from "./SVGEN";
+import SVGES from "./SVGES";
 
 const LanguageSelector = () => {
   const { changeLanguage, isCurrentLanguage } = useLocalization()
@@ -34,22 +37,28 @@ const LanguageSelector = () => {
   return (
     <>
       <button
-        className={`${styles.button} ${styles.button_small} ${isCurrentLanguage(portugues) ? styles.button_active : ''}`}
+        className={`${styles.button} ${isCurrentLanguage(portugues) ? styles.button_active : ''}`}
         onClick={() => performLanguageChange(portugues)}
       >
-        Portugues
+        <ToolTip title="Português">
+          <SVGParticlesGenWrapper SVGComponent={SVGPT} />
+        </ToolTip>
       </button>
       <button
-        className={`${styles.button} ${styles.button_small} ${isCurrentLanguage(ingles) ? styles.button_active : ''}`}
+        className={`${styles.button} ${isCurrentLanguage(ingles) ? styles.button_active : ''}`}
         onClick={() => performLanguageChange(ingles)}
       >
-        English
+        <ToolTip title="English">
+          <SVGParticlesGenWrapper SVGComponent={SVGEN} />
+        </ToolTip>
       </button>
       <button
-        className={`${styles.button} ${styles.button_small} ${isCurrentLanguage(espanhol) ? styles.button_active : ''}`}
+        className={`${styles.button} ${isCurrentLanguage(espanhol) ? styles.button_active : ''}`}
         onClick={() => performLanguageChange(espanhol)}
       >
-        Español
+        <ToolTip title="Español">
+          <SVGParticlesGenWrapper SVGComponent={SVGES} />
+        </ToolTip>
       </button>
     </>
   )
