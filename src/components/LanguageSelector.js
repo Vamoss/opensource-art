@@ -24,7 +24,7 @@ export const LanguageSelector = () => {
     if (activeLanguage) {
       performLanguageChange(activeLanguage)
     }
-  }, [performLanguageChange])
+  }, [])
 
   return (
     <div 
