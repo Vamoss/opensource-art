@@ -13,7 +13,9 @@ const CodeEditor = () => {
 
   const onChange = (value) => {
     updateCode(value);
+  };
 
+  const onUpdate = () => {
     if (codeMirrorRef.current) {
       const view = codeMirrorRef?.current?.view
       const cursorPosition = view?.viewState?.state?.selection?.ranges[0]?.from
@@ -21,7 +23,7 @@ const CodeEditor = () => {
         localStorage.setItem("cursorPosition", cursorPosition);
       }
     }
-  };
+  }
 
   const onEditorCreate = (view) => {
     view.focus()
@@ -66,6 +68,7 @@ const CodeEditor = () => {
             height="50%"
             extensions={[javascript()]}
             onChange={onChange}
+            onUpdate={onUpdate}
             onCreateEditor={onEditorCreate}
             theme={dracula}
             autoFocus={true}
