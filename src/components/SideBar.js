@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import styles from "./SideBar.module.css";
@@ -8,8 +8,52 @@ import SVGCode from "./SVGCode";
 import SVGNetwork from "./SVGNetwork";
 import SVGSave from "./SVGSave";
 import SVGParticlesGenWrapper from "./SVGParticlesGenWrapper";
-import { LanguageSelector } from "./LanguageSelector";
-import { useLocalization } from "../hooks/useLocalization";
+import {
+  useLocalization,
+  espanhol,
+  ingles,
+  portugues
+} from "../hooks/useLocalization";
+
+const LanguageSelector = () => {
+  const { changeLanguage, isCurrentLanguage } = useLocalization()
+
+  const performLanguageChange = useCallback((language) => {
+    localStorage.setItem("activeLanguage", language);
+    window.ipcRenderer.send("app:editor-change-language", language);
+    changeLanguage(language)
+  }, [changeLanguage])
+  
+  useEffect(() => {
+    const activeLanguage = localStorage.getItem("activeLanguage");
+    if (activeLanguage) {
+      performLanguageChange(activeLanguage)
+    }
+  }, [])
+
+  return (
+    <>
+      <button
+        className={`${styles.button} ${styles.button_small} ${isCurrentLanguage(portugues) ? styles.button_active : ''}`}
+        onClick={() => performLanguageChange(portugues)}
+      >
+        Portugues
+      </button>
+      <button
+        className={`${styles.button} ${styles.button_small} ${isCurrentLanguage(ingles) ? styles.button_active : ''}`}
+        onClick={() => performLanguageChange(ingles)}
+      >
+        English
+      </button>
+      <button
+        className={`${styles.button} ${styles.button_small} ${isCurrentLanguage(espanhol) ? styles.button_active : ''}`}
+        onClick={() => performLanguageChange(espanhol)}
+      >
+        Español
+      </button>
+    </>
+  )
+}
 
 const SideBarActions = () => {
   const { translations } = useLocalization()
@@ -28,6 +72,7 @@ const SideBarActions = () => {
           <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
         </ToolTip>
       </button>
+      <h2 className={styles.title}>{translations.nav_title_idiomas}</h2>
       <LanguageSelector />
     </>
   );

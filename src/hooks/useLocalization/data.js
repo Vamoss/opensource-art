@@ -18,6 +18,13 @@ export const translations = [
       en: 'Actions',
       es: 'Acciónes'
     }
+  },{
+    key :'nav_title_idiomas',
+    translations : {
+      pt: 'Idiomas',
+      en: 'Languages',
+      es: 'Idiomas'
+    }
   }
   ,{
     key :'nav_tooltip_codigo',

@@ -9,6 +9,7 @@
 .button {
   border: none;
   background: #30264b;
+  color: #7260a4;
   border-bottom: 2px solid #604f8f;
   cursor: pointer;
   height: 80px;
@@ -21,10 +22,26 @@
 
 .button:hover {
   background: #1f153a;
+  color: #FFFFFF;
 }
 
 .button img {
   width: 40px;
+}
+
+.button_small {
+  height: 40px;
+}
+
+.button_active {
+  pointer-events: none;
+  background: #1f153a;
+  color: #FFFFFF;
+}
+
+.button_active:hover {
+  background: #1f153a;
+  color: #FFFFFF;
 }
 
 .title {
