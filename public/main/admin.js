@@ -24,12 +24,11 @@ const runScript = (scriptName, cb) => {
 exports.runCommand = (command, data) => {
   switch (command) {
     case 'reiniciar-instalacao':
-      runScript('cleanup.sh', () => {
-        fileManager.bootInstalation()
-      })
+      fileManager.deleteFolders()
+      fileManager.bootInstalation()
       break;
     case 'criar-backup':
-      runScript('create-backup.sh')
+      fileManager.createBackup()
       break;
     case 'remover-sketch':
       if (data && data.id) {

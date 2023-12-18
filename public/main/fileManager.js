@@ -5,6 +5,7 @@ const PATH_TO_FILES = "/data/";
 const PATH_TO_TEMP_FILES = "temp/";
 const PATH_TO_INITIAL_FILES = "initial/";
 const PATH_TO_DERIVED_FILES = "derived/";
+const PATH_TO_BACKUP = "backup/";
 
 /**
  * Checa se o diretorio existe.
@@ -30,6 +31,21 @@ const ensuresFolderStructure = () => {
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_INITIAL_FILES}`));
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`));
 };
+
+exports.deleteFolders = () => {
+  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_TEMP_FILES}`), { recursive: true, force: true });
+  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`), { recursive: true, force: true });
+  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}appstate.json`), { force: true });
+  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}sketchesGraphData.json`), { force: true });
+}
+
+exports.createBackup = () => {
+  const backupPath = path.join(__dirname, PATH_TO_BACKUP)
+  const dataPath = path.join(__dirname, PATH_TO_FILES)
+  
+  ensuresDir(backupPath)
+  fs.cpSync(dataPath, `${backupPath}${Date.now()}`, {recursive: true});
+} 
 
 /**
  * Save a file to the temp folder.
