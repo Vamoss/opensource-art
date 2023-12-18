@@ -135,7 +135,7 @@ ipcMain.on("app:run-sketch", (ev, file) => {
       id: file.id,
       dir: "temp",
     },
-    canRunSketch: false
+    canRunSketch: false,
   });
   fileManager.saveTempFile(file, viewerWin);
 });
