@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import styles from "./SideBar.module.css";
 import ToolTip from "./ToolTip";
@@ -88,23 +88,39 @@ const SideBarActions = () => {
 
 const SideBarNav = () => {
   const { translations } = useLocalization()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const navigateToPath = (path) => {
+    if (path === location.pathname) {
+      return;
+    }
+
+    navigate(path)
+  }
 
   return (
     <>
       <h2 className={styles.title}>{translations.nav_title_nav}</h2>
-      <Link to="/" className={styles.button}>
+      <button
+        onClick={() => navigateToPath('/')} 
+        className={styles.button}
+      >
         <ToolTip title={translations.nav_tooltip_codigo}>
           <SVGParticlesGenWrapper SVGComponent={SVGCode} />
         </ToolTip>
-      </Link>
+      </button>
       {/* <Link to="/sketches" className={styles.link}>
         Sketches
       </Link> */}
-      <Link to="/force-graph" className={styles.button}>
+      <button
+        onClick={() => navigateToPath('/force-graph')} 
+        className={styles.button}
+      >
         <ToolTip title={translations.nav_tooltip_arquivo}>
           <SVGParticlesGenWrapper SVGComponent={SVGNetwork} />
         </ToolTip>
-      </Link>
+      </button>
     </>
   )
 }
