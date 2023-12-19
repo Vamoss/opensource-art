@@ -22,6 +22,11 @@ export const reducer = (state = initialState, action) => {
         ...state,
         canRunSketch: true,
       };
+    case "block_run_sketch":
+      return {
+        ...state,
+        canRunSketch: false,
+      };
     default:
       return state;
   }

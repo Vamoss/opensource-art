@@ -61,6 +61,9 @@ export const FileSystemProvider = ({ children }) => {
     if (!state.canRunSketch) {
       return
     }
+
+    dispatch({ type: "block_run_sketch" })
+
     const sketchName = `${uuidv4()}.js`;
     window.ipcRenderer.send("app:run-sketch", {
       id: sketchName,
@@ -76,6 +79,10 @@ export const FileSystemProvider = ({ children }) => {
         },
       },
     });
+
+    setTimeout(() => {
+      dispatch({ type: "allow_run_sketch" })
+    }, ALLOW_RUN_SKETCH_DEBOUNCE_TIME)
   };
 
   const loadFile = (fileData = { dir: null, id: null, name: null }) => {
