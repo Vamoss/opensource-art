@@ -40,6 +40,7 @@ exports.deleteFolders = () => {
   fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`), { recursive: true, force: true });
   fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}appstate.json`), { force: true });
   fs.rmSync(path.join(parentDirname, `${PATH_TO_FILES}sketchesGraphData.json`), { force: true });
+  console.log("processo :: REINICIAR INSTALAÇÃO :: pastas deletadas")
 }
 
 exports.createBackup = () => {
@@ -50,6 +51,7 @@ exports.createBackup = () => {
   ensuresDir(backupPath)
   fs.cpSync(dataPath, `${backupPath}${timestamp}`, {recursive: true});
   fs.cpSync(path.join(parentDirname, `${PATH_TO_FILES}sketchesGraphData.json`), `${backupPath}${timestamp}/sketchesGraphData.json`);
+  console.log("processo :: CRIAR BACKUP :: concluido")
 } 
 
 /**
@@ -412,6 +414,7 @@ const bootInstalation = (defaultState) => {
   getGraphDataFile();
   if (defaultState) {
     this.updateAppState(defaultState)
+    console.log("processo :: REINICIAR INSTALAÇÃO :: concluido")
   }
 }
 
