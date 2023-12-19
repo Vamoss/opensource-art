@@ -7,7 +7,7 @@ exports.runCommand = (command, data) => {
   switch (command) {
     case 'reiniciar-instalacao':
       fileManager.deleteFolders()
-      fileManager.bootInstalation()
+      fileManager.bootInstalation(stateModel.getDefaultState())
       break;
     case 'criar-backup':
       fileManager.createBackup()

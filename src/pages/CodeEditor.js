@@ -69,6 +69,7 @@ const CodeEditor = () => {
             extensions={[javascript()]}
             onChange={onChange}
             onUpdate={onUpdate}
+            onFocus={onUpdate}
             onCreateEditor={onEditorCreate}
             theme={dracula}
             autoFocus={true}

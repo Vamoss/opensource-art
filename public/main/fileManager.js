@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const parentDirname = path.resolve(__dirname, '../..')
+
 const PATH_TO_FILES = "/data/";
 const PATH_TO_TEMP_FILES = "temp/";
 const PATH_TO_INITIAL_FILES = "initial/";
@@ -26,6 +28,7 @@ const ensuresDir = (dirPath) => {
  * para salvar as sketches está disponível.
  */
 const ensuresFolderStructure = () => {
+  ensuresDir(path.join(parentDirname, PATH_TO_FILES));
   ensuresDir(path.join(__dirname, PATH_TO_FILES));
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_TEMP_FILES}`));
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_INITIAL_FILES}`));
@@ -36,15 +39,17 @@ exports.deleteFolders = () => {
   fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_TEMP_FILES}`), { recursive: true, force: true });
   fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`), { recursive: true, force: true });
   fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}appstate.json`), { force: true });
-  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}sketchesGraphData.json`), { force: true });
+  fs.rmSync(path.join(parentDirname, `${PATH_TO_FILES}sketchesGraphData.json`), { force: true });
 }
 
 exports.createBackup = () => {
   const backupPath = path.join(__dirname, PATH_TO_BACKUP)
   const dataPath = path.join(__dirname, PATH_TO_FILES)
+  const timestamp = Date.now()
   
   ensuresDir(backupPath)
-  fs.cpSync(dataPath, `${backupPath}${Date.now()}`, {recursive: true});
+  fs.cpSync(dataPath, `${backupPath}${timestamp}`, {recursive: true});
+  fs.cpSync(path.join(parentDirname, `${PATH_TO_FILES}sketchesGraphData.json`), `${backupPath}${timestamp}/sketchesGraphData.json`);
 } 
 
 /**
@@ -94,7 +99,7 @@ exports.saveFile = (file) => {
    * próprio metodo.
    */
   const graphDataFileLocation = path.join(
-    __dirname,
+    parentDirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
@@ -142,7 +147,7 @@ exports.removeNodeFromGraph = (id, defaultState) => {
 
   // load the graph data
   const graphDataFileLocation = path.join(
-    __dirname,
+    parentDirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
   
@@ -256,7 +261,7 @@ exports.updateAppState = (appState) => {
 
 const getGraphDataFile = () => {
   const graphDataFileLocation = path.join(
-    __dirname,
+    parentDirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
@@ -335,7 +340,7 @@ exports.getGraphDataFile = getGraphDataFile;
 
 exports.saveGraphDataFile = (data) => {
   const graphDataFileLocation = path.join(
-    __dirname,
+    parentDirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
@@ -402,9 +407,12 @@ exports.loadFile = (fileData) => {
 };
 
 
-const bootInstalation = () => {
+const bootInstalation = (defaultState) => {
   ensuresFolderStructure();
   getGraphDataFile();
+  if (defaultState) {
+    this.updateAppState(defaultState)
+  }
 }
 
 exports.bootInstalation = bootInstalation
