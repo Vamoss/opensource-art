@@ -3,7 +3,8 @@
   padding: 2px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  justify-content: space-between;
 }
 
 .button {
@@ -45,6 +46,7 @@
 }
 
 .title {
+  text-align: center;
   font-size: 1rem;
   color: #f8a438;
 }

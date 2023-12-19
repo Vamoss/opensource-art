@@ -19,7 +19,7 @@ import SVGEN from "./SVGEN";
 import SVGES from "./SVGES";
 
 const LanguageSelector = () => {
-  const { changeLanguage, isCurrentLanguage } = useLocalization()
+  const { translations, changeLanguage, isCurrentLanguage } = useLocalization()
 
   const performLanguageChange = useCallback((language) => {
     localStorage.setItem("activeLanguage", language);
@@ -36,6 +36,7 @@ const LanguageSelector = () => {
 
   return (
     <>
+      <h2 className={styles.title}>{translations.nav_title_idiomas}</h2>
       <button
         className={`${styles.button} ${isCurrentLanguage(portugues) ? styles.button_active : ''}`}
         onClick={() => performLanguageChange(portugues)}
@@ -81,8 +82,6 @@ const SideBarActions = () => {
           <SVGParticlesGenWrapper SVGComponent={SVGArrow} />
         </ToolTip>
       </button>
-      <h2 className={styles.title}>{translations.nav_title_idiomas}</h2>
-      <LanguageSelector />
     </>
   );
 };
@@ -113,8 +112,13 @@ const SideBarNav = () => {
 const SideBar = ({ hasActions = false }) => {
   return (
     <nav className={styles.sidebar}>
-      <SideBarNav />
-      {hasActions && <SideBarActions />}
+      <div>
+        <SideBarNav />
+        {hasActions && <SideBarActions />}
+      </div>
+      <div>
+        <LanguageSelector />
+      </div>
     </nav>
   );
 };
