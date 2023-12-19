@@ -8,6 +8,7 @@ import SideBar from "../components/SideBar";
 import styles from "./Layout.module.css";
 
 const CodeEditor = () => {
+  const containerRef = useRef()
   const codeMirrorRef = useRef()
   const { code, updateCode } = useFileSystem();
 
@@ -42,6 +43,10 @@ const CodeEditor = () => {
         console.warn(e)
       }
     }
+    const localStorageScrollPosition = localStorage.getItem("scrollPosition");
+    if (localStorageScrollPosition) {
+      containerRef.current.scrollTop = localStorageScrollPosition
+    }
   }
 
   useEffect(() => {
@@ -57,10 +62,28 @@ const CodeEditor = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const currentContainer = containerRef.current
+
+    const onScroll = (scrollEvent) => {
+      localStorage.setItem("scrollPosition", scrollEvent.target.scrollTop);
+    }
+
+    if(currentContainer) {
+      currentContainer.addEventListener("scroll", onScroll)
+    }
+
+    return () => {
+      if(currentContainer) {
+        currentContainer.removeEventListener("scroll", onScroll)
+      }
+    }
+  }, [containerRef])
+
   return (
     <main className={styles.container}>
       <SideBar hasActions />
-      <section className={styles.codeContainer}>
+      <section ref={containerRef} className={styles.codeContainer}>
         {code && (
           <CodeMirror
             ref={codeMirrorRef}
