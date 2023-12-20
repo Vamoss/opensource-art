@@ -380,6 +380,7 @@ export const meatballs =
         if (d.state === STATES.PRESSED && !d.dragged) {
             if (typeof selectHandler === "function") selectHandler(d);
         }
+        d.dragged = false
       });
     };
 
