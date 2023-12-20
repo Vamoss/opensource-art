@@ -16,33 +16,8 @@ const CodeEditor = () => {
     updateCode(value);
   };
 
-  const onUpdate = () => {
-    if (codeMirrorRef.current) {
-      const view = codeMirrorRef?.current?.view
-      const cursorPosition = view?.viewState?.state?.selection?.ranges[0]?.from
-      if (cursorPosition) {
-        localStorage.setItem("cursorPosition", cursorPosition);
-      }
-    }
-  }
-
   const onEditorCreate = (view) => {
     view.focus()
-    const localStorageCursorPosition = localStorage.getItem("cursorPosition");
-    if(localStorageCursorPosition) {
-      try {
-        // dispatches the cursor position event and scrolls into view
-        view.dispatch({
-          selection: {
-            anchor: localStorageCursorPosition,
-            head: localStorageCursorPosition
-          },
-          scrollIntoView: true
-        })
-      } catch(e) {
-        console.warn(e)
-      }
-    }
     const localStorageScrollPosition = localStorage.getItem("scrollPosition");
     if (localStorageScrollPosition) {
       containerRef.current.scrollTop = localStorageScrollPosition
@@ -91,8 +66,6 @@ const CodeEditor = () => {
             height="50%"
             extensions={[javascript()]}
             onChange={onChange}
-            onUpdate={onUpdate}
-            onFocus={onUpdate}
             onCreateEditor={onEditorCreate}
             theme={dracula}
             autoFocus={true}
