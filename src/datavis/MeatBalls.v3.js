@@ -348,7 +348,11 @@ export const meatballs =
       } else {
         data.forEach((d) => {
           if (d.state === STATES.PRESSED) {
-            d.dragged = true;
+            if (!d.dragged) {
+              d.dragged = 1;
+            } else {
+              d.dragged++;
+            }
             d.pos.x += sketch.mouseX - sketch.pmouseX;
             d.pos.y += sketch.mouseY - sketch.pmouseY;
           }
@@ -366,7 +370,7 @@ export const meatballs =
         );
         if (distance < d.radius / 2) {
           d.state = STATES.PRESSED;
-          d.dragged = false;
+          d.dragged = 0;
           return false;
         }
         return true;
@@ -377,10 +381,10 @@ export const meatballs =
     sketch.mouseReleased = () => {
       draggingMap = false;
       data.forEach((d) => {
-        if (d.state === STATES.PRESSED && !d.dragged) {
+        if (d.state === STATES.PRESSED && d.dragged < 10) {
             if (typeof selectHandler === "function") selectHandler(d);
         }
-        d.dragged = false
+        d.dragged = 0
       });
     };
 
