@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
-import { dracula } from "@uiw/codemirror-theme-dracula";
+import { customDracula } from "../components/CodeEditorTheme";
 import { javascript } from "@codemirror/lang-javascript";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import SideBar from "../components/SideBar";
@@ -94,7 +94,7 @@ const CodeEditor = () => {
             onUpdate={onUpdate}
             onFocus={onUpdate}
             onCreateEditor={onEditorCreate}
-            theme={dracula}
+            theme={customDracula}
             autoFocus={true}
           />
         )}
