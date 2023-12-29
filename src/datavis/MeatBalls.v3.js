@@ -15,20 +15,12 @@ http://github.com/vamoss
 ///Original force-graph
 //https://editor.p5js.org/JeromePaddick/sketches/bjA_UOPip
 
-import p5 from "p5";
-
-const minRadius = 20;
-const maxRadius = 80;
-
-//metaballs
-const handle_len_rate = 1.5;
-const maxDistance = 100; //metaball
-var connections = [];
+const minRadius = 30;
+const maxRadius = 100;
 
 const gravityConstant = 1.1;
-const forceConstant = 500;
-const radiusDistributionInfluence = 0.2;
-var motionVel = 100;
+const forceConstant = 2000;
+var motionVel = 10;
 var center;
 
 var ctx;
@@ -48,12 +40,12 @@ export const meatballs =
     sketch.setup = () => {
       var canvas = sketch.createCanvas(windowWidth, windowHeight);
       ctx = canvas.drawingContext;
-			center = sketch.createVector(sketch.width/2, sketch.height/2)
-
+      center = sketch.createVector(sketch.width/2, sketch.height/2)
+      
       /*
       //generate random points
       //descending from the original
-      var total = sketch.random(5, 10);
+      var total = sketch.random(15, 20);
       for (var i = 0; i < total; i++) {
         data.push({
           id: data.length,
@@ -61,7 +53,7 @@ export const meatballs =
         });
       }
       //descending from others
-      total = sketch.random(10, 50);
+      total = sketch.random(80, 100);
       for (var i = 0; i < total; i++) {
         data.push({
           id: data.length,
@@ -76,24 +68,24 @@ export const meatballs =
         d.parent = data.find((p) => p.id === d.parentId);
         if (d.parentId !== null) {
           if(d.x && d.y){
-						//for saved data
+            //for saved data
             d.pos = sketch.createVector(
               d.x * sketch.width,
               d.y * sketch.height
             );
-          	d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
+            d.color = sketch.color(d.r * 255, d.g * 255, d.b * 255);
           }else{
-						//for new content (generated content enter this condition)
+            //for new content (generated content enter this condition)
             // d.pos = findSpot(d);
             d.pos = sketch.createVector(
-              d.parent.pos.x + sketch.random(-5, 5),
-              d.parent.pos.y + sketch.random(-5, 5)
+              d.parent.pos.x + sketch.random(-20, 20),
+              d.parent.pos.y + sketch.random(-20, 20)
             );
-					  d.color = sketch.color(
-							sketch.constrain(d.parent.color._getRed() + sketch.random(-30, 30), 0, 255),
-							sketch.constrain(d.parent.color._getGreen() + sketch.random(-30, 30), 0, 255),
-							sketch.constrain(d.parent.color._getBlue() + sketch.random(-30, 30), 0, 255)
-						);
+            d.color = sketch.color(
+              sketch.constrain(d.parent.color._getRed() + sketch.random(-30, 30), 0, 255),
+              sketch.constrain(d.parent.color._getGreen() + sketch.random(-30, 30), 0, 255),
+              sketch.constrain(d.parent.color._getBlue() + sketch.random(-30, 30), 0, 255)
+            );
           }
         } else {
           d.pos = sketch.createVector(sketch.width / 2, sketch.height / 2);
@@ -120,6 +112,11 @@ export const meatballs =
           sketch.constrain(d.color._getBlue() - 30, 0, 255)
         );
 
+        d.colorString = d.color.toString();
+        d.overColorString = d.overColor.toString();
+        d.pressColorString = d.pressColor.toString();
+        d.virtualPos = {x:0, y:0}
+        d.force = {x:0, y:0}
         d.grow = 0;
         d.growVel = 0;
         d.state = STATES.FREE;
@@ -148,138 +145,87 @@ export const meatballs =
     };
 
     sketch.draw = () => {
-    sketch.background(255, 255, 220);
-    sketch.translate(transX, transY);
-			
-    if(motionVel > 20)
-        motionVel -= 5
+      sketch.background(255, 255, 220);
+      sketch.translate(transX, transY);
 
-    /*
-    //update circles pos
-    for(var i = 0; i < data.length; i++){
-        var d = data[i];
-        if(d.state !== STATES.FREE)
-            continue;
+      if(motionVel > 20)
+          motionVel -= 5
 
-        //noise motion
-        var angle = sketch.noise(d.id + sketch.frameCount/100) * sketch.TWO_PI;
-        d.pos.x += sketch.cos(angle)/10;
-        d.pos.y += sketch.sin(angle)/10;
-    }
-    /**/
-    
-    // apply force towards centre
-    for(let i = 0; i < data.length; i++){
-        let d = data[i];
-        d.virtualPos = d.pos.copy().sub(center)
-        let gravity = d.virtualPos.copy().mult(-1).mult(gravityConstant)
-        d.force = gravity
-    }
+      // apply force towards centre
+      for(let i = 0; i < data.length; i++){
+          let d = data[i];
+          d.virtualPos.x = d.pos.x - center.x
+          d.virtualPos.y = d.pos.y - center.y
 
-    // apply repulsive force between nodes
-    for(let i = 0; i < data.length; i++){
-        let d = data[i];
-        for(let j = i+1; j < data.length; j++){
-            let d2 = data[j];
-            let dir = d2.virtualPos.copy().sub(d.virtualPos)
-            let force = dir.div(dir.mag() * dir.mag())
-            force.mult(forceConstant*d.radius*radiusDistributionInfluence)
-            d.force.add(force.copy().mult(-1))
-            if (d2.state === STATES.FREE){
-                d2.force.add(force)
-            }
-        }
-    }
+          //gravity
+          d.force.x = d.virtualPos.x * -gravityConstant
+          d.force.y = d.virtualPos.y * -gravityConstant
+      }
 
-    // apply forces applied by connections
-    for(let i = 0; i < data.length; i++){
-        let d = data[i]
-        if (d.parent !== null) {
-            let d2 = d.parent
-            let dis = d.virtualPos.copy().sub(d2.virtualPos)
-            d.force.sub(dis)
-            if (d2.state === STATES.FREE){
-                d2.force.add(dis)
-            }
-        }
-    }
-    
-    //update
-    for(let i = 0; i < data.length; i++){
-        let d = data[i]
-        if (d.state === STATES.FREE){
-            d.virtualPos.add(d.force.copy().div(motionVel))
-            d.pos = d.virtualPos.copy().add(center)
-        }
-    }
+      // apply repulsive force between nodes
+      for(let i = 0; i < data.length; i++){
+          const d = data[i];
+          for(let j = i+1; j < data.length; j++){
+            const d2 = data[j];
+            const dirX = d2.virtualPos.x - d.virtualPos.x
+            const dirY = d2.virtualPos.y - d.virtualPos.y
+            var magnitude = magSq(dirX, dirY);
+            if(magnitude === 0) magnitude = 0.001;
+            const forceX = (dirX / magnitude) * forceConstant
+            const forceY = (dirY / magnitude) * forceConstant
+            d.force.x -= forceX * (d2.originalRadius)/minRadius
+            d.force.y -= forceY * (d2.originalRadius)/minRadius
+            d2.force.x += forceX * (d.originalRadius)/minRadius
+            d2.force.y += forceY * (d.originalRadius)/minRadius
+          }
+      }
+
+      // apply forces applied by connections
+      for(let i = 0; i < data.length; i++){
+          const d = data[i]
+          if (d.parent !== null) {
+              let d2 = d.parent
+              const dirX = (d.virtualPos.x - d2.virtualPos.x)/((d2.children.length+10)/10)
+              const dirY = (d.virtualPos.y - d2.virtualPos.y)/((d2.children.length+10)/10)
+              d.force.x -= dirX
+              d.force.y -= dirY
+              d2.force.x += dirX
+              d2.force.y += dirY
+          }
+      }
+
+      //update
+      for(let i = 0; i < data.length; i++){
+          const d = data[i]
+          if (d.state === STATES.FREE){
+            d.virtualPos.x += d.force.x / motionVel
+            d.virtualPos.y += d.force.y / motionVel
+            d.pos.x = d.virtualPos.x + center.x
+            d.pos.y = d.virtualPos.y + center.y
+          }
+      }
 
       calculateBoundbox();
 
-      //generate connections
-      connections.length = 0;
+      //draw connections
       data.forEach((d) => {
         if (d.parent !== null) {
-          //var distance = dist(d.pos.x, d.pos.y, d.parent.pos.x, d.parent.pos.y);
-          var path = metaball(d, d.parent, 0.5, handle_len_rate, maxDistance);
-          if (path) {
-            path.color1 = d.parent.color;
-            path.color2 = d.color;
-            path.x1 = d.parent.pos.x;
-            path.y1 = d.parent.pos.y;
-            path.x2 = d.pos.x;
-            path.y2 = d.pos.y;
-            connections.push(path);
-          }
+          ctx.strokeStyle = d.colorString;
+          ctx.lineWidth = 5;
+          ctx.beginPath();
+          ctx.moveTo(d.parent.pos.x, d.parent.pos.y);
+          ctx.lineTo(d.pos.x, d.pos.y);
+          ctx.stroke();
         }
-      });
-
-      //draw connections
-      sketch.noStroke();
-      connections.forEach((path) => {
-        sketch.fill(path.color1);
-        var gradient = ctx.createLinearGradient(
-          path.x1,
-          path.y1,
-          path.x2,
-          path.y2
-        );
-
-        // Add three color stops
-        gradient.addColorStop(0.2, path.color1.toString());
-        gradient.addColorStop(0.8, path.color2.toString());
-
-        // Set the fill style and draw a rectangle
-        ctx.fillStyle = gradient;
-
-        sketch.beginShape();
-        for (var j = 0; j < 4; j++) {
-          if (j === 0) sketch.vertex(path.segments[j].x, path.segments[j].y);
-          else if (j % 2 !== 0) {
-            sketch.vertex(
-              path.segments[(j + 1) % 4].x,
-              path.segments[(j + 1) % 4].y
-            );
-          }
-          if (j % 2 !== 0) continue;
-          sketch.bezierVertex(
-            path.segments[j].x + path.handles[j].x,
-            path.segments[j].y + path.handles[j].y,
-            path.segments[(j + 1) % 4].x + path.handles[(j + 1) % 4].x,
-            path.segments[(j + 1) % 4].y + path.handles[(j + 1) % 4].y,
-            path.segments[(j + 1) % 4].x,
-            path.segments[(j + 1) % 4].y
-          );
-        }
-        sketch.endShape();
       });
 
       //draw circles
       data.forEach((d, i) => {
-        sketch.strokeWeight(4);
-        sketch.stroke(d.color);
-        if (d.state === STATES.FREE) sketch.fill(255);
-        else if (d.state === STATES.OVER) sketch.fill(d.overColor);
-        else if (d.state === STATES.PRESSED) sketch.fill(d.pressColor);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = d.colorString;
+        if (d.state === STATES.FREE) ctx.fillStyle = "rgb(255, 255, 255)";
+        else if (d.state === STATES.OVER) ctx.fillStyle = d.overColorString;
+        else if (d.state === STATES.PRESSED) ctx.fillStyle = d.pressColorString;
 
         var pulse = 0;
         if(i === data.length-1){
@@ -289,28 +235,28 @@ export const meatballs =
         var ease = quarticInOut; //d.growVel > 0 ? elasticOut : elasticIn;
         d.radius = d.originalRadius + ease(d.grow) * 20 + pulse;
 
-        sketch.ellipse(d.pos.x, d.pos.y, d.radius - 4, d.radius - 4);
-
-        sketch.strokeWeight(1);
-        sketch.stroke(d.pressColor);
-        sketch.ellipse(d.pos.x, d.pos.y, d.radius - 6, d.radius - 6);
+        ctx.beginPath();
+        ctx.ellipse(d.pos.x, d.pos.y, d.radius * 0.5 - 4, d.radius * 0.5 - 4, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fill();
       });
 
       /*
-    //draw texts
-    noStroke();
-    fill(0);
-    textAlign(CENTER, CENTER);
-    data.forEach(d => {	
-      var size = d.radius * 0.8;
-      textSize(size);
-      text(d.id, d.pos.x, d.pos.y + size/10);
-    })	
-    */
+      //draw texts
+      sketch.noStroke();
+      sketch.fill(0);
+      sketch.textAlign(sketch.CENTER, sketch.CENTER);
+      data.forEach(d => {	
+        var size = d.radius * 0.8;
+        sketch.textSize(size);
+        // sketch.text(d.id, d.pos.x, d.pos.y + size/10);
+        sketch.text(d.children.length, d.pos.x, d.pos.y + size/10);
+      })	
+      /**/
     };
 
     sketch.mouseMoved = () => {
-			if(!ctx) return;
+      if(!ctx) return;
       var found = false;
       data.forEach((d) => {
         var distance = sketch.dist(
@@ -382,7 +328,7 @@ export const meatballs =
       draggingMap = false;
       data.forEach((d) => {
         if (d.state === STATES.PRESSED && d.dragged < 10) {
-            if (typeof selectHandler === "function") selectHandler(d);
+          if (typeof selectHandler === "function") selectHandler(d);
         }
         d.dragged = 0
       });
@@ -410,58 +356,6 @@ export const meatballs =
       };
     }
 
-    function metaball(ball1, ball2, v, handle_len_rate, maxDistance) {
-      var radius1 = ball1.radius / 2;
-      var radius2 = ball2.radius / 2;
-      var center1 = ball1.pos;
-      var center2 = ball2.pos;
-			var d = center1.dist(center2);
-      var u1 = 0;
-      var u2 = 0;
-      //if (d > maxDistance || d <= abs(radius1 - radius2)) {
-      if (d <= sketch.abs(radius1 - radius2)) {
-        return;
-      } else if (d < radius1 + radius2) {
-        // case circles are overlapping
-        u1 = sketch.acos(
-          (radius1 * radius1 + d * d - radius2 * radius2) / (2 * radius1 * d)
-        );
-        u2 = sketch.acos(
-          (radius2 * radius2 + d * d - radius1 * radius1) / (2 * radius2 * d)
-        );
-      }
-      var angle1 = sketch.atan2(center2.y - center1.y, center2.x - center1.x);
-      var angle2 = sketch.acos((radius1 - radius2) / d);
-      var angle1a = angle1 + u1 + (angle2 - u1) * v;
-      var angle1b = angle1 - u1 - (angle2 - u1) * v;
-      var angle2a = angle1 + sketch.PI - u2 - (sketch.PI - u2 - angle2) * v;
-      var angle2b = angle1 - sketch.PI + u2 + (sketch.PI - u2 - angle2) * v;
-      var p1a = p5.Vector.add(center1, p5.Vector.fromAngle(angle1a, radius1));
-      var p1b = p5.Vector.add(center1, p5.Vector.fromAngle(angle1b, radius1));
-      var p2a = p5.Vector.add(center2, p5.Vector.fromAngle(angle2a, radius2));
-      var p2b = p5.Vector.add(center2, p5.Vector.fromAngle(angle2b, radius2));
-      // define handle length by the distance between
-      // both ends of the curve to draw
-      var d2 = sketch.min(
-        v * handle_len_rate,
-        sketch.dist(p1a.x, p1a.y, p2a.x, p2a.y) / (radius1 + radius2)
-      );
-      // case circles are overlapping:
-      d2 *= sketch.min(1, (d * 2) / (radius1 + radius2));
-      radius1 *= d2;
-      radius2 *= d2;
-      var path = {
-        segments: [p1a, p2a, p2b, p1b],
-        handles: [
-          p5.Vector.fromAngle(angle1a - sketch.HALF_PI, radius1),
-          p5.Vector.fromAngle(angle2a + sketch.HALF_PI, radius2),
-          p5.Vector.fromAngle(angle2b - sketch.HALF_PI, radius2),
-          p5.Vector.fromAngle(angle1b + sketch.HALF_PI, radius1),
-        ],
-      };
-      return path;
-    }
-
     // https://idmnyu.github.io/p5.js-func/
     function quarticInOut(x) {
       if (x < 0.5) {
@@ -470,5 +364,9 @@ export const meatballs =
         var v = x - 1;
         return -8 * v * v * v * v + 1;
       }
+    }
+    
+    function magSq(x, y){
+      return x * x + y * y;
     }
   };
