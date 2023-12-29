@@ -1,0 +1,50 @@
+.container {
+  width: 100px;
+  position: relative;
+}
+
+.button {
+  border: none;
+  background: #30264b;
+  color: white;
+  border-bottom: 2px solid #604f8f;
+  cursor: pointer;
+  height: 80px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:hover {
+  background: #1f153a;
+}
+
+.button_small {
+  height: 30px;
+  padding: 0 40px;
+}
+
+.button_active {
+  pointer-events: none;
+  background: #9584c4;
+  color: #30264b;
+}
+
+.button_active:hover {
+  background: #9584c4;
+  color: #30264b;
+}
+
+.expandableContainer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateX(100%);
+  z-index: 1;
+}
+
+.languageOptions {
+  display: flex;
+  flex-direction: column;
+}

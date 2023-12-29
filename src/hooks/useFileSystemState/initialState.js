@@ -12,6 +12,7 @@ export const defaultPersistentState = {
 
   // a sketch carregada para o visualizador
   currentInView: null,
+  canRunSketch: true,
 };
 
 export const initialState = {

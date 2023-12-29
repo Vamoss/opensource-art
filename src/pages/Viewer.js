@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useFileSystem } from "../hooks/useFileSystemState";
 import ErrorBar from "../components/ErrorBar";
+import { useLocalization } from "../hooks/useLocalization";
 
 const SCREEN_SAVER_WAITING_TIME = 5 * 60 * 1000; // 5 min
 
 const Viewer = () => {
   const { currentInView } = useFileSystem();
+  const { changeLanguage } = useLocalization();
   const [sketchError, setSketchError] = useState(null);
 
   useEffect(() => {
@@ -27,6 +29,7 @@ const Viewer = () => {
     screenSaverTimer = setTimeout(startScreenSaver, SCREEN_SAVER_WAITING_TIME);
 
     window.ipcRenderer.receive("app:server-user-interaction", resetTimeout);
+    window.ipcRenderer.receive("app:server-change-language", (language) => changeLanguage(language));
     window.addEventListener("mousemove", resetTimeout);
     window.addEventListener("keydown", resetTimeout);
 
@@ -35,7 +38,7 @@ const Viewer = () => {
       window.removeEventListener("mousemove", resetTimeout);
       if (screenSaverTimer) clearTimeout(screenSaverTimer);
     };
-  }, []);
+  }, [changeLanguage]);
 
   useEffect(() => {
     if (currentInView === null) {

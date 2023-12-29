@@ -7,6 +7,8 @@ import { getFileMetaData } from "./getFileMeta";
 import { defaultPersistentState, initialState } from "./initialState";
 import { reducer } from "./reducer";
 
+const ALLOW_RUN_SKETCH_DEBOUNCE_TIME = 1000
+
 export const FileSystemProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   let navigate = useNavigate();
@@ -14,6 +16,21 @@ export const FileSystemProvider = ({ children }) => {
   const updateCode = (code) => {
     dispatch({ type: "update_code", payload: code });
   };
+
+  useEffect(() => {
+    let allowRunSketchTimeout = null
+    if(!state.canRunSketch) {
+      allowRunSketchTimeout = setTimeout(() => {
+        dispatch({ type: "allow_run_sketch" })
+      }, ALLOW_RUN_SKETCH_DEBOUNCE_TIME)
+    };
+
+    return () => {
+      if (allowRunSketchTimeout) {
+        clearTimeout(allowRunSketchTimeout)
+      }
+    }
+  })
 
   /**
    * Internal methods comunication with file system
@@ -41,6 +58,12 @@ export const FileSystemProvider = ({ children }) => {
    */
 
   const runSketch = () => {
+    if (!state.canRunSketch) {
+      return
+    }
+
+    dispatch({ type: "block_run_sketch" })
+
     const sketchName = `${uuidv4()}.js`;
     window.ipcRenderer.send("app:run-sketch", {
       id: sketchName,
@@ -56,6 +79,10 @@ export const FileSystemProvider = ({ children }) => {
         },
       },
     });
+
+    setTimeout(() => {
+      dispatch({ type: "allow_run_sketch" })
+    }, ALLOW_RUN_SKETCH_DEBOUNCE_TIME)
   };
 
   const loadFile = (fileData = { dir: null, id: null, name: null }) => {
@@ -92,21 +119,28 @@ export const FileSystemProvider = ({ children }) => {
     );
     window.ipcRenderer
       .invoke("app:save-file", fileMetaData)
-      .then((newState) => {
-        if (newState === null) {
-          return;
-        }
-        dispatch({
-          type: "update_state",
-          payload: newState,
-        });
-        navigate("/force-graph");
-      });
+      // .then((newState) => {
+      //   if (newState === null) {
+      //     return;
+      //   }
+      //   dispatch({
+      //     type: "update_state",
+      //     payload: newState,
+      //   });
+      //   navigate("/force-graph");
+      // })
+      navigate("/force-graph");
   };
 
   return (
     <FileSystemContext.Provider
-      value={{ ...state, updateCode, runSketch, loadFile, saveFile }}
+      value={{ 
+        ...state,
+        updateCode,
+        runSketch,
+        loadFile,
+        saveFile 
+      }}
     >
       {children}
     </FileSystemContext.Provider>

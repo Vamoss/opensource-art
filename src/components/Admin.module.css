@@ -1,0 +1,71 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0,0,0,0.8);
+  padding: 20px;
+  border: 20px solid rgba(255, 255, 255, 0.4);
+}
+
+.controlsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.btn {
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  border: none;
+
+  padding: 20px 24px;
+  font-size: 20px;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 24px;
+  width: 60%;
+  background-color: white;
+}
+
+.modalControls {
+  display: flex;
+  margin-top: 30px;
+  justify-content: space-between;
+}
+
+.btn:hover {
+  background-color: rgb(44, 44, 44);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  padding: 20px 24px;
+  font-size: 40px;
+}
+
+.closeBtn:hover {
+  background-color: black;
+  color: white; 
+}
+
+.input {
+  padding: 12px;
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.text {
+  color: white;
+}

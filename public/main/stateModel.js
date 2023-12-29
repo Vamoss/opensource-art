@@ -25,6 +25,8 @@ function draw() {
     id: "initial",
     dir: "initial",
   },
+
+  canRunSketch: true,
 };
 
 exports.updateStateToActivateSketchFromFile = (file) => {
@@ -39,6 +41,7 @@ exports.updateStateToActivateSketchFromFile = (file) => {
       dir: file.meta.dir,
       id: file.meta.id,
     },
+    canRunSketch: true,
   };
 };
 

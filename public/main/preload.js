@@ -9,13 +9,18 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
       "app:run-sketch",
       "app:update-file",
       "app:editor-user-interaction",
+      "app:editor-change-language",
+      "app:admin-run-command",
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
   receive: (channel, func) => {
-    let validChannels = ["app:server-user-interaction"];
+    let validChannels = [
+      "app:server-user-interaction",
+      "app:server-change-language"
+    ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args));

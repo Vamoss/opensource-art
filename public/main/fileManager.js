@@ -1,10 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 
+const parentDirname = path.resolve(__dirname, '../..')
+
 const PATH_TO_FILES = "/data/";
 const PATH_TO_TEMP_FILES = "temp/";
 const PATH_TO_INITIAL_FILES = "initial/";
 const PATH_TO_DERIVED_FILES = "derived/";
+const PATH_TO_BACKUP = "backup/";
 
 /**
  * Checa se o diretorio existe.
@@ -25,11 +28,31 @@ const ensuresDir = (dirPath) => {
  * para salvar as sketches está disponível.
  */
 const ensuresFolderStructure = () => {
+  ensuresDir(path.join(parentDirname, PATH_TO_FILES));
   ensuresDir(path.join(__dirname, PATH_TO_FILES));
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_TEMP_FILES}`));
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_INITIAL_FILES}`));
   ensuresDir(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`));
 };
+
+exports.deleteFolders = () => {
+  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_TEMP_FILES}`), { recursive: true, force: true });
+  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}${PATH_TO_DERIVED_FILES}`), { recursive: true, force: true });
+  fs.rmSync(path.join(__dirname, `${PATH_TO_FILES}appstate.json`), { force: true });
+  fs.rmSync(path.join(parentDirname, `${PATH_TO_FILES}sketchesGraphData.json`), { force: true });
+  console.log("processo :: REINICIAR INSTALAÇÃO :: pastas deletadas")
+}
+
+exports.createBackup = () => {
+  const backupPath = path.join(__dirname, PATH_TO_BACKUP)
+  const dataPath = path.join(__dirname, PATH_TO_FILES)
+  const timestamp = Date.now()
+  
+  ensuresDir(backupPath)
+  fs.cpSync(dataPath, `${backupPath}${timestamp}`, {recursive: true});
+  fs.cpSync(path.join(parentDirname, `${PATH_TO_FILES}sketchesGraphData.json`), `${backupPath}${timestamp}/sketchesGraphData.json`);
+  console.log("processo :: CRIAR BACKUP :: concluido")
+} 
 
 /**
  * Save a file to the temp folder.
@@ -78,7 +101,7 @@ exports.saveFile = (file) => {
    * próprio metodo.
    */
   const graphDataFileLocation = path.join(
-    __dirname,
+    parentDirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
@@ -87,6 +110,7 @@ exports.saveFile = (file) => {
   graphData.push({
     id: file.name,
     parentId: file?.parent?.id,
+    originalParentId: file?.parent?.id,
     r: Math.random(),
     g: Math.random(),
     b: Math.random(),
@@ -108,6 +132,63 @@ exports.saveFile = (file) => {
     { encoding: "utf-8" }
   );
 };
+
+/**
+ * Remove um node do grafico
+ */
+exports.removeNodeFromGraph = (id, defaultState) => {
+  // never remove the initial sketch
+  if (id === 'initial') {
+    return;
+  }
+
+  const stateFileLocation = path.join(
+    __dirname,
+    `${PATH_TO_FILES}appstate.json`
+  );
+
+  // load the graph data
+  const graphDataFileLocation = path.join(
+    parentDirname,
+    `${PATH_TO_FILES}sketchesGraphData.json`
+  );
+  
+  const graphData = getGraphDataFile();
+
+  let nodeToRemoveParentId = null;
+  
+  // filter out the node to remove
+  // get its parent id
+  const filteredGraphData = graphData.filter((node) => {
+    if (node.id === id) {
+      nodeToRemoveParentId = node.parentId;
+    }
+
+    return node.id != id;
+  });
+
+  // update the parent id of all nodes that had the node to remove as parent
+  const mappedGraphData = filteredGraphData.map((node) => {
+    if(node.parentId === id) {
+      return {
+        ...node,
+        parentId: nodeToRemoveParentId,
+      }
+    }
+
+    return {...node};
+  });
+
+  // save the file
+  fs.writeFileSync(graphDataFileLocation, JSON.stringify(mappedGraphData), {
+    encoding: "utf-8",
+  });
+
+  // reset appstate
+  fs.writeFileSync(stateFileLocation, JSON.stringify(defaultState), {
+    encoding: "utf-8",
+  });
+}
 
 /**
  * Checa se o arquivo já existe.
@@ -182,7 +263,7 @@ exports.updateAppState = (appState) => {
 
 const getGraphDataFile = () => {
   const graphDataFileLocation = path.join(
-    __dirname,
+    parentDirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
@@ -201,6 +282,7 @@ const getGraphDataFile = () => {
       defaultGraphData.push({
         id: initial,
         parentId: null,
+        originalParentId: null,
         x: Math.random(),
         y: Math.random(),
         r: Math.random(),
@@ -232,6 +314,7 @@ const getGraphDataFile = () => {
         defaultGraphData.push({
           id: derived,
           parentId: fileMeta.parent?.id,
+          originalParentId: fileMeta.parent?.id,
           x: Math.random(),
           y: Math.random(),
           r: Math.random(),
@@ -259,7 +342,7 @@ exports.getGraphDataFile = getGraphDataFile;
 
 exports.saveGraphDataFile = (data) => {
   const graphDataFileLocation = path.join(
-    __dirname,
+    parentDirname,
     `${PATH_TO_FILES}sketchesGraphData.json`
   );
 
@@ -325,5 +408,16 @@ exports.loadFile = (fileData) => {
   };
 };
 
-ensuresFolderStructure();
-getGraphDataFile();
+
+const bootInstalation = (defaultState) => {
+  ensuresFolderStructure();
+  getGraphDataFile();
+  if (defaultState) {
+    this.updateAppState(defaultState)
+    console.log("processo :: REINICIAR INSTALAÇÃO :: concluido")
+  }
+}
+
+exports.bootInstalation = bootInstalation
+
+bootInstalation()
