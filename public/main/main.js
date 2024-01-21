@@ -155,3 +155,37 @@ ipcMain.on("app:editor-change-language", (ev, language) => {
 ipcMain.on("app:admin-run-command", (ev, { command, data }) => {
   admin.runCommand(command, data)
 })
+
+
+//lock mouse position to main window position
+const robot = require('robotjs');
+const lockVerificationInterval = 50;//millis
+let initialMousePos = robot.getMousePos();
+function checkMousePosition() {
+  let pos = robot.getMousePos();
+  if (
+    pos.x !== initialMousePos.x ||
+    pos.y !== initialMousePos.y
+  ) {
+    // console.log('Mouse moved to:', pos);
+    // console.log(win.getContentBounds());
+    
+    //clamp and update mouse pos if needed
+    const screenLimit = win.getContentBounds()
+    let shouldLock = false;
+    if(pos.x < screenLimit.x || pos.x > screenLimit.x + screenLimit.width){
+      shouldLock = true;
+      pos.x = Math.min(Math.max(pos.x, screenLimit.x), screenLimit.x + screenLimit.width);
+    }
+    if(pos.y < screenLimit.y || pos.y > screenLimit.y + screenLimit.height){
+      shouldLock = true;
+      pos.y = Math.min(Math.max(pos.y, screenLimit.y), screenLimit.y + screenLimit.height);
+    }
+    if(shouldLock) {
+      robot.moveMouse(pos.x, pos.y);
+    }
+    initialMousePos = pos;
+  }
+  setTimeout(checkMousePosition, lockVerificationInterval);
+}
+setTimeout(checkMousePosition, lockVerificationInterval);
