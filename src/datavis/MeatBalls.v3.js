@@ -208,10 +208,12 @@ export const meatballs =
       calculateBoundbox();
 
       //draw connections
+      ctx.lineWidth = 5;
       data.forEach((d) => {
+				if(!sketch.isVisible(d))
+          return;
         if (d.parent !== null) {
           ctx.strokeStyle = d.colorString;
-          ctx.lineWidth = 5;
           ctx.beginPath();
           ctx.moveTo(d.parent.pos.x, d.parent.pos.y);
           ctx.lineTo(d.pos.x, d.pos.y);
@@ -220,8 +222,10 @@ export const meatballs =
       });
 
       //draw circles
+      ctx.lineWidth = 4;
       data.forEach((d, i) => {
-        ctx.lineWidth = 4;
+				if(!sketch.isVisible(d))
+          return;
         ctx.strokeStyle = d.colorString;
         if (d.state === STATES.FREE) ctx.fillStyle = "rgb(255, 255, 255)";
         else if (d.state === STATES.OVER) ctx.fillStyle = d.overColorString;
@@ -254,6 +258,12 @@ export const meatballs =
       })	
       /**/
     };
+		
+		sketch.isVisible = d => {
+			const border = -50;
+			return d.pos.x > border-transX && d.pos.x < sketch.width-border-transX
+					&& d.pos.y > border-transY && d.pos.y < sketch.height-border-transY
+		}
 
     sketch.mouseMoved = () => {
       if(!ctx) return;
