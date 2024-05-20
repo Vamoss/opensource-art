@@ -15,6 +15,8 @@ http://github.com/vamoss
 ///Original force-graph
 //https://editor.p5js.org/JeromePaddick/sketches/bjA_UOPip
 
+const PRINT = false;
+
 const minRadius = 30;
 const maxRadius = 100;
 
@@ -40,7 +42,10 @@ export const meatballs =
     sketch.setup = () => {
       var canvas = sketch.createCanvas(windowWidth, windowHeight);
       ctx = canvas.drawingContext;
-      center = sketch.createVector(sketch.width/2, sketch.height/2)
+      center = sketch.createVector(sketch.width/2, sketch.height/2);
+
+      if(PRINT)
+        sketch.pixelDensity(2);
       
       /*
       //generate random points
@@ -145,6 +150,12 @@ export const meatballs =
     };
 
     sketch.draw = () => {
+      if(PRINT){
+        sketch.translate(sketch.width/2, sketch.height/2);
+        sketch.scale(0.3, 0.3);
+        sketch.translate(-sketch.width/2, -sketch.height/2);
+      }
+
       sketch.background(255, 255, 220);
       sketch.translate(transX, transY);
 
@@ -210,7 +221,7 @@ export const meatballs =
       //draw connections
       ctx.lineWidth = 5;
       data.forEach((d) => {
-				if(!sketch.isVisible(d))
+				if(!PRINT && !sketch.isVisible(d))
           return;
         if (d.parent !== null) {
           ctx.strokeStyle = d.colorString;
@@ -224,7 +235,7 @@ export const meatballs =
       //draw circles
       ctx.lineWidth = 4;
       data.forEach((d, i) => {
-				if(!sketch.isVisible(d))
+				if(!PRINT && !sketch.isVisible(d))
           return;
         ctx.strokeStyle = d.colorString;
         if (d.state === STATES.FREE) ctx.fillStyle = "rgb(255, 255, 255)";
@@ -343,6 +354,14 @@ export const meatballs =
         d.dragged = 0
       });
     };
+
+    if(PRINT){
+      sketch.keyPressed = () => {
+        if(sketch.key == 's'){
+          sketch.saveCanvas();
+        }
+      };
+    }
 
     function calculateBoundbox() {
       var minX = sketch.width / 2;
